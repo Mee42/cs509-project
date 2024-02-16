@@ -2,19 +2,27 @@ package cs509.backend.Service;
 
 import cs509.backend.Models.Flight;
 import cs509.backend.Repositories.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.List;
 
-@Service
-public class FlightService {
-    private final FlightDeltasRepository deltasRepository;
+public abstract class FlightService<F extends Flight, R extends FlightRepository<F, Integer>> {
+    protected final R flightRepository;
 
-    public FlightService(FlightDeltasRepository deltasRepository) {
-        this.deltasRepository = deltasRepository;
+    public FlightService(R flightRepository) {
+        this.flightRepository = flightRepository;
     }
 
-    public Flight getFlightDeltasById(int id) {
-        return deltasRepository.findById(id).orElse(null);
+    public F getFlightDeltasById(int id) {
+        return flightRepository.findById(id).orElse(null);
     }
+    public F getFlightDeltasByDepartDateTime(LocalDateTime dateTime) {
+        return flightRepository
+            .findByDepartDateTime(dateTime);
+    }
+    public List<F> getFlightDeltasByArriveAirport(String arriveAirport) {
+        return flightRepository.findByArriveAirport(arriveAirport);
+    }
+
+
 
 }
