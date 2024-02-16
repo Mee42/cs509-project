@@ -1,6 +1,6 @@
 package cs509.backend.Repositories;
 
-import cs509.backend.Models.Flight;
+import cs509.backend.Entities.Flight;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 

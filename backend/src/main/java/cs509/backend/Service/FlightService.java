@@ -1,6 +1,6 @@
 package cs509.backend.Service;
 
-import cs509.backend.Models.Flight;
+import cs509.backend.Entities.Flight;
 import cs509.backend.Repositories.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +22,4 @@ public abstract class FlightService<F extends Flight, R extends FlightRepository
     public List<F> getFlightDeltasByArriveAirport(String arriveAirport) {
         return flightRepository.findByArriveAirport(arriveAirport);
     }
-
-
-
 }

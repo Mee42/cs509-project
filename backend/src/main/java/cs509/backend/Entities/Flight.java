@@ -1,4 +1,4 @@
-package cs509.backend.Models;
+package cs509.backend.Entities;
 
 import jakarta.persistence.*;
 import lombok.Data;

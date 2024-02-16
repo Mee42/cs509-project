@@ -1,9 +1,7 @@
 package cs509.backend.Controller;
 
-import cs509.backend.Models.Flight;
-import cs509.backend.Models.FlightDeltas;
+import cs509.backend.Entities.FlightDeltas;
 import cs509.backend.Service.FlightDeltasService;
-import cs509.backend.Service.FlightService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

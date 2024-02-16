@@ -1,5 +1,5 @@
 package cs509.backend.Service;
-import cs509.backend.Models.FlightDeltas;
+import cs509.backend.Entities.FlightDeltas;
 import cs509.backend.Repositories.FlightDeltasRepository;
 import org.springframework.stereotype.Service;
 
