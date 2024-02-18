@@ -8,7 +8,7 @@ function Flight() {
     // update component with backend data
     const getData = async() => {
       try {
-        const res = await axios.get('http://localhost:8080/api/flight')
+        const res = await axios.get('http://localhost:8080/api/allflights')
         console.log(res.data)
         setResponse(res.data);
       } catch(err) {

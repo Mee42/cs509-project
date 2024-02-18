@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/flight")
+@RequestMapping("/api/allflights")
 @CrossOrigin
 public class FlightController {
 
