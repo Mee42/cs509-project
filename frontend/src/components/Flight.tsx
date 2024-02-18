@@ -8,11 +8,10 @@ function Flight() {
     // update component with backend data
     const getData = async() => {
       try {
-        const res = await axios.get('https://localhost:8081/api/v1')
+        const res = await axios.get('http://localhost:8080/api/flight')
         console.log(res.data)
         setResponse(res.data);
-      }
-      catch(err) {
+      } catch(err) {
         console.log("error: failed to access backend flight api")
       }
     }

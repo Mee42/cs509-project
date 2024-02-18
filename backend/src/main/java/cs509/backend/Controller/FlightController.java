@@ -2,6 +2,7 @@ package cs509.backend.Controller;
 
 import cs509.backend.Entities.FlightDeltas;
 import cs509.backend.Service.FlightDeltasService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/flight")
+@CrossOrigin
 public class FlightController {
 
     private final FlightDeltasService flightService;
