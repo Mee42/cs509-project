@@ -1,9 +1,7 @@
-import Flight from "./components/Flight"
+import FlightSearchFilters from "./components/flightSearch/FlightSearchFilters/FlightSearchFilters";
 
 function App() {
-  return (
-    <Flight></Flight>
-  )
+  return <FlightSearchFilters></FlightSearchFilters>;
 }
 
-export default App
+export default App;
