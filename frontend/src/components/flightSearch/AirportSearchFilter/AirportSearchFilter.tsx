@@ -1,3 +1,5 @@
+import "./AirportSearchFilter.css";
+
 interface Props {
   airports: string[];
   labelText: string;
@@ -5,14 +7,14 @@ interface Props {
 
 function AirportSearchFilter({ airports, labelText }: Props) {
   return (
-    <label>
-      {labelText}
-      <select>
-        {airports.map((item) => (
-          <option key={item}>{item}</option>
-        ))}
-      </select>
-    </label>
+    <select className="AirportSearchFilter" defaultValue="placeholder">
+      <option value="placeholder" disabled hidden>
+        {labelText}
+      </option>
+      {airports.map((item) => (
+        <option key={item}>{item}</option>
+      ))}
+    </select>
   );
 }
 

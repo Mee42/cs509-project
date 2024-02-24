@@ -1,0 +1,17 @@
+.navbarContainer {
+    border-bottom: 1px solid gray;
+}
+
+.navbar {
+    margin-left: 3vw;
+    margin-right: 3vw;
+    padding: 1vh;
+}
+
+.navbar h1 {
+    color:brown
+}
+
+img {
+    height:4em;
+}
