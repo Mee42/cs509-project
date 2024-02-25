@@ -43,6 +43,11 @@ public class FlightController {
         return flightService.getAllDepartAirports();
     }
 
+    @GetMapping("/arriveAirport")
+    public String[] getAllArriveAirports() {
+        return flightService.getAllArriveAirports();
+    }
+
     @PostMapping("/submitForm/{page}")
     public HashMap<String, HashMap<String, Flight[]>> submitForm(@RequestBody FlightForm flightForm,
                                                                  @PathVariable("page") int page) {
