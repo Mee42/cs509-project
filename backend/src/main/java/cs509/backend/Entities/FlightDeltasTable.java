@@ -5,5 +5,5 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "deltas")
-public class FlightDeltas extends Flight {
+public class FlightDeltasTable extends FlightBaseTable {
 }
