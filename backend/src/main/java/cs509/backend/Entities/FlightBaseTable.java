@@ -1,13 +1,18 @@
 package cs509.backend.Entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @MappedSuperclass
-public class Flight {
+@AllArgsConstructor
+@NoArgsConstructor
+public class FlightBaseTable {
+// data format: 1,'2023-01-05 01:15:00','2023-01-05 03:50:00','Houston (IAH)','Denver (DEN)','WN309'
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
