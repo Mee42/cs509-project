@@ -3,11 +3,18 @@ import "./AirportSearchFilter.css";
 interface Props {
   airports: string[];
   labelText: string;
+  onSelectAirport: CallableFunction;
 }
 
-function AirportSearchFilter({ airports, labelText }: Props) {
+function AirportSearchFilter({ airports, labelText, onSelectAirport }: Props) {
   return (
-    <select className="AirportSearchFilter" defaultValue="placeholder">
+    <select
+      className="AirportSearchFilter"
+      defaultValue="placeholder"
+      onChange={(event) => {
+        onSelectAirport(event.target.value);
+      }}
+    >
       <option value="placeholder" disabled hidden>
         {labelText}
       </option>

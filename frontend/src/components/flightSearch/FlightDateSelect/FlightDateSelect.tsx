@@ -7,7 +7,7 @@ interface Props {
 
 const FlightDateSelect = ({ labelText, onSelectDate }: Props) => {
   return (
-    <div id="FlightDateSelect">
+    <div className="FlightDateSelect">
       <label>{labelText}</label>
       <input
         type="date"
