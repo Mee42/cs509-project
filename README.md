@@ -26,7 +26,7 @@ Recommend using Intellij as it has everything out of the box for spring MVC fram
 
 ## Backend implementation so far
 ### API path
-1. The api path is located at /api/flight
+1. The api path is located at /api/flights
 2. The api return everything in JSON format
 3. Within the api path include 3 sub path for getting data:
      - /departAirport: return an array of String containing all depart airports
