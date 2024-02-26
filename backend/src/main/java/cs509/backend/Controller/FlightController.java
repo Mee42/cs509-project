@@ -9,7 +9,8 @@ import java.time.LocalTime;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/api/flight")
+@RequestMapping("/api/allflights")
+@CrossOrigin
 public class FlightController {
 
     private final FlightService flightService;

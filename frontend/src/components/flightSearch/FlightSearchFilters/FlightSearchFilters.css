@@ -1,0 +1,8 @@
+#FlightSearch {
+    padding: 3vw;
+}
+
+#FlightSearchLowerFilters {
+    display: flex;
+    justify-content: space-evenly;
+}
