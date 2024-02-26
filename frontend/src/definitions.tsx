@@ -1,1 +1,4 @@
-export const backend_url = "http://localhost:8080";
+const backendURI = "http://localhost:8080";
+export const arrivalAirportsEndpoint = backendURI + "/api/allflights/arriveAirport"
+export const departureAirportsEndpoint = backendURI + "/api/allflights/departAirports"
+export const flightSearchEndpoint = backendURI + "/api/allflights/submitForm"

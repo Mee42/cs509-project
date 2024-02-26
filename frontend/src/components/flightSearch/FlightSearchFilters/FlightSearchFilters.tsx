@@ -3,7 +3,11 @@ import AirportSearchFilter from "../AirportSearchFilter/AirportSearchFilter";
 import FlightDateSelect from "../FlightDateSelect/FlightDateSelect";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { backend_url } from "../../../definitions";
+import {
+  arrivalAirportsEndpoint,
+  departureAirportsEndpoint,
+  flightSearchEndpoint,
+} from "../../../definitions";
 
 interface Props {
   setFlights: CallableFunction;
@@ -22,7 +26,7 @@ const FlightSearchFilters = ({ setFlights }: Props) => {
 
   async function getArrivalAirports() {
     await axios
-      .get(backend_url + "/api/allflights/arriveAirport")
+      .get(arrivalAirportsEndpoint)
       .then((response) => {
         setArrivalAirportList(response.data);
       })
@@ -33,7 +37,7 @@ const FlightSearchFilters = ({ setFlights }: Props) => {
 
   async function getDepartureAirports() {
     await axios
-      .get(backend_url + "/api/allflights/departAirports")
+      .get(departureAirportsEndpoint)
       .then((response) => {
         setDepartureAirportList(response.data);
       })
@@ -47,7 +51,13 @@ const FlightSearchFilters = ({ setFlights }: Props) => {
       `Search filters: Departure ${departureAirport} ${departureDate}, Arrival ${arrivalAirport} ${arrivalDate}`
     );
     await axios
-      .get(backend_url + "/api/allflights/submitForm")
+      .post(flightSearchEndpoint + "/10", {
+        departAirport: "Atlanta (ATL)",
+        arriveAirport: "Tucson (TUS)",
+        departDate: "2023-01-05",
+        arriveDate: "2023-01-06",
+        connectionNum: "All",
+      })
       .then((response) => {
         setFlights(response.data);
       })
@@ -56,6 +66,7 @@ const FlightSearchFilters = ({ setFlights }: Props) => {
       });
   }
 
+  // execute on page load
   useEffect(() => {
     getArrivalAirports();
     getDepartureAirports();
