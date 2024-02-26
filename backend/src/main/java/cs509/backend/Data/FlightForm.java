@@ -15,7 +15,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class FlightForm {
 
-    //DTO class to map form submit from frontend to backend - name and case are important here
+    //DTO class to map form submit from frontend to backend - name, case, and type are important here
 
     private String departAirport; //required
     private String arriveAirport; //required
