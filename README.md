@@ -27,13 +27,13 @@ Recommend using Intellij as it has everything out of the box for spring MVC fram
 ## Backend implementation so far
 ### API path
 1. The api path is located at /api/flight
-2. The api return everthing in JSON format
+2. The api return everything in JSON format
 3. Within the api path include 3 sub path for getting data:
      - /departAirport: return an array of String containing all depart airports
      - /arriveAirport: return an array of String containing all arrive airports
      - /submitForm/{page}: return a map containing a sub map with all flights
-         + require a JSON body of the form, not normal form data. Form fields and names must be the same with fields in FlightForm class, located at backend/src/main/java/cs509/backend/Data/FlightForm
-         + must specify the page (batch) in interger: 1 - first batch, 2 - second batch. Batch is in group of 10 for default. Meaning page 1 get the first 10 flights and page 2 get the second 10 flights if any.
+         + require a JSON body of the form, not normal html form data. Basically, the backend is looking for data being sent to in JSON format, meaning frontend doesn't need to use html form to display search input information. The JSON field names (key) must be the same with the field names in FlightForm class, located at backend/src/main/java/cs509/backend/Data/FlightForm
+         + must specify the page (batch) in integer: 1 - first batch, 2 - second batch. Batch is in group of 10 for default. Meaning page 1 get the first 10 flights and page 2 get the second 10 flights if any.
          + Read the FlightForm class for details of what fields are required and optional. Just call the api to see the return data.
        
 
