@@ -27,12 +27,14 @@ public class FlightForm {
 
     private String classSeat;  // default - Economy
     private boolean roundTrip; // default - false - no round trip
-    private String connectionNum; // default - all
+    private String connectionNum; // default - all - accept (0, 1, 2, all)
 
+    // only used if outbound depart date is specified
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime departTimeStart;
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime departTimeEnd;
+    // only used if outbound arrive date is specified
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime arriveTimeStart;
     @DateTimeFormat(pattern = "HH:mm:ss")
@@ -44,11 +46,12 @@ public class FlightForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate roundTripArriveDate;
 
-    // only used if round trip is true and round trip dates are specified
+    // only used if round trip is true and round trip depart date is specified
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime roundTripDepartTimeStart;
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime roundTripDepartTimeEnd;
+    // only used if round trip is true and round trip arrive date is specified
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime roundTripArriveTimeStart;
     @DateTimeFormat(pattern = "HH:mm:ss")

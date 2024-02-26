@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/api/allflights")
+@RequestMapping("/api/flights")
 @CrossOrigin
 public class FlightController {
 
@@ -29,11 +29,11 @@ public class FlightController {
         LocalTime dEnd = null;
         LocalTime aStart = null;
         LocalTime aEnd = null;
-        String connectionNumber = "All";
+        String connectionNumber = "all";
 
         LocalDate rdD = LocalDate.parse("2023-01-01");
 
-        FlightForm t = new FlightForm(dA, aA, dD, aD, "", false, connectionNumber,
+        FlightForm t = new FlightForm(dA, aA, dD, aD, "", true, connectionNumber,
                 dStart, dEnd, aStart, aEnd);
 
         return flightService.findFlightBy(t, page, 10);

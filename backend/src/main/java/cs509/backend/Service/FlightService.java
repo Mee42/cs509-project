@@ -7,14 +7,15 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 public class FlightService {
     private final FlightRepository flightRepository;
     private final JdbcClient jdbcClient;
 
-    public record FlightInfo(String departAirport, String arriveAirport, LocalDate departDate, LocalDate arriveDate,
+    public record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd,
                              LocalDateTime arriveDateTimeStart, LocalDateTime arriveDateTimeEnd) {}
 
@@ -29,13 +30,13 @@ public class FlightService {
 
         String numberOfConnection = flightForm.getConnectionNum();
         int start = getLimitStartQuery(page, count);
-        String key1 = "0", key2 = "1", key3 = "2";
-        int minConnectionTime = 60; // in minute
-
+        final String key1 = "0", key2 = "1", key3 = "2";
+        final int minConnectionTime = 60; // in minute
         HashMap<String, HashMap<String, Flight[]>> flightDetails = new HashMap<>();
 
         HashMap<String, Flight[]> outboundFlight = findOneWayFlights(key1, key2, key3, numberOfConnection,
                 getFlightInfo(flightForm, false), start, count, minConnectionTime);
+
         flightDetails.put("outbound", outboundFlight);
 
         if (flightForm.isRoundTrip()) {
@@ -46,24 +47,44 @@ public class FlightService {
             if (flightForm.getRoundTripDepartDate() == null) {
                 // set inbound depart date time to the earliest outbound arrive date time + 60 minutes transition.
                 // all flights are sorted with the earliest arrive date time already, so just get the first flight.
-                LocalDateTime eOutArriveDateTime = outboundFlight.get("outbound")[0].getFinalArriveDateTime().plusMinutes(minConnectionTime);
-                flightForm.setRoundTripDepartDate(eOutArriveDateTime.toLocalDate());
-                flightForm.setRoundTripDepartTimeStart(eOutArriveDateTime.toLocalTime());
+                if (numberOfConnection.equalsIgnoreCase("all")) {
+                    List<LocalDateTime> t = new ArrayList<>();
+                    for(Flight[] f : outboundFlight.values())
+                        if (f.length != 0)
+                            t.add(f[0].getFinalArriveDateTime());
+                        else
+                            t.add(null);
+                    LocalDateTime eOutArriveDateTime = findEarliest(t.get(0), t.get(1), t.get(2)).plusMinutes(minConnectionTime);
+                    flightForm.setRoundTripDepartDate(eOutArriveDateTime.toLocalDate());
+                    flightForm.setRoundTripDepartTimeStart(eOutArriveDateTime.toLocalTime());
+                }
+                else if (outboundFlight.get(numberOfConnection).length != 0) {
+                    LocalDateTime eOutArriveDateTime = outboundFlight.get(numberOfConnection)[0].getFinalArriveDateTime().plusMinutes(minConnectionTime);
+                    flightForm.setRoundTripDepartDate(eOutArriveDateTime.toLocalDate());
+                    flightForm.setRoundTripDepartTimeStart(eOutArriveDateTime.toLocalTime());
+                }
             }
-
             flightDetails.put("inbound", findOneWayFlights(key1, key2, key3, numberOfConnection,
                     getFlightInfo(flightForm, true), start, count, minConnectionTime));
-            return flightDetails;
         }
         return flightDetails;
+    }
+
+    private static LocalDateTime findEarliest(LocalDateTime dt1, LocalDateTime dt2, LocalDateTime dt3) {
+        return Stream.of(dt1, dt2, dt3)
+                .filter(Objects::nonNull) // Filter out null values
+                .min(Comparator.naturalOrder()) // Find the minimum date
+                .orElse(null); // Return null if all dates are null
     }
 
     private int getLimitStartQuery(int page, int count) {
         return (page * count) - count + 1;
     }
 
-    private LocalDateTime checkWindowTime(LocalTime windowTime, LocalDateTime defaultTime) {
-        return (windowTime == null) ? defaultTime : null;
+    private LocalDateTime checkWindowTime(LocalTime windowTime, LocalDate baseDate, LocalTime defaultTime) {
+        if (baseDate == null)
+            return null;
+        return (windowTime != null) ? LocalDateTime.of(baseDate, windowTime) : (defaultTime != null) ? LocalDateTime.of(baseDate, defaultTime) : null;
     }
 
     private boolean checkDateABeforeB(LocalDate dateA, LocalDate dateB) {
@@ -83,13 +104,12 @@ public class FlightService {
         LocalTime arriveTimeStart = (getRoundTrip) ? flightForm.getRoundTripArriveTimeStart() : flightForm.getArriveTimeStart();
         LocalTime arriveTimeEnd = (getRoundTrip) ? flightForm.getRoundTripArriveTimeEnd() : flightForm.getArriveTimeEnd();
 
-        LocalDateTime departStartWindow = checkWindowTime(departTimeStart, LocalDateTime.of(departDate, LocalTime.parse("00:00:00")));
-        LocalDateTime departEndWindow = checkWindowTime(departTimeEnd, LocalDateTime.of(departDate, LocalTime.parse("23:59:00")));
-        LocalDateTime arriveStartWindow = checkWindowTime(arriveTimeStart, LocalDateTime.of(arriveDate, LocalTime.parse("00:00:00")));
-        LocalDateTime arriveEndWindow = checkWindowTime(arriveTimeEnd, LocalDateTime.of(arriveDate, LocalTime.parse("23:59:00")));
+        LocalDateTime departStartWindow = checkWindowTime(departTimeStart, departDate, LocalTime.parse("00:00:00"));
+        LocalDateTime departEndWindow = checkWindowTime(departTimeEnd, departDate, LocalTime.parse("23:59:00"));
+        LocalDateTime arriveStartWindow = checkWindowTime(arriveTimeStart, arriveDate, LocalTime.parse("00:00:00"));
+        LocalDateTime arriveEndWindow = checkWindowTime(arriveTimeEnd, arriveDate, LocalTime.parse("23:59:00"));
 
-        return new FlightInfo(departAirport, arriveAirport, flightForm.getDepartDate(), flightForm.getArriveDate(),
-                departStartWindow, departEndWindow, arriveStartWindow, arriveEndWindow);
+        return new FlightInfo(departAirport, arriveAirport, departStartWindow, departEndWindow, arriveStartWindow, arriveEndWindow);
     }
 
     public HashMap<String, Flight[]> findOneWayFlights(String key1, String key2, String key3, String numberOfConnection,
@@ -115,8 +135,8 @@ public class FlightService {
                 "FROM CombinedFlights " +
                 "WHERE DepartAirport = :departAirport " +
                     "AND ArriveAirport = :arriveAirport " +
-                    "AND (:departDate IS NULL OR DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
-                    "AND (:arriveDate IS NULL OR ArriveDateTime BETWEEN :arriveDateTimeStart AND :arriveDateTimeEnd) " +
+                    "AND (:departDateTimeStart IS NULL OR DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
+                    "AND (:arriveDateTimeStart IS NULL OR ArriveDateTime BETWEEN :arriveDateTimeStart AND :arriveDateTimeEnd) " +
                 "ORDER BY " +
                     "FinalArriveDateTime " +
                 "LIMIT :start, :count";
@@ -124,8 +144,6 @@ public class FlightService {
         Flight[] no =  jdbcClient.sql(sql)
                 .param("departAirport", flightInfo.departAirport)
                 .param("arriveAirport", flightInfo.arriveAirport)
-                .param("departDate", flightInfo.departDate)
-                .param("arriveDate", flightInfo.arriveAirport)
                 .param("departDateTimeStart", flightInfo.departDateTimeStart)
                 .param("departDateTimeEnd", flightInfo.departDateTimeEnd)
                 .param("arriveDateTimeStart", flightInfo.arriveDateTimeStart)
@@ -136,7 +154,7 @@ public class FlightService {
                 .list().toArray(new FlightNoConnection[0]);
 
         HashMap<String, Flight[]> flights = new HashMap<>();
-        flights.put(key, no);
+            flights.put(key, no);
         return flights;
     }
 
@@ -163,8 +181,8 @@ public class FlightService {
                     "AND B.ArriveAirport = :arriveAirport " +
                     "AND B.DepartDateTime >= A.ArriveDateTime " +
                     "AND ABS(TIMESTAMPDIFF(MINUTE, A.ArriveDateTime, B.DepartDateTime)) >= :minConnectionTime " +
-                    "AND (:departDate IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
-                    "AND (:arriveDate IS NULL OR B.ArriveDateTime BETWEEN :arriveDateTimeStart AND :arriveDateTimeEnd) " +
+                    "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
+                    "AND (:arriveDateTimeStart IS NULL OR B.ArriveDateTime BETWEEN :arriveDateTimeStart AND :arriveDateTimeEnd) " +
                 "ORDER BY " +
                     "FinalArriveDateTime " +
                 "LIMIT :start, :count";
@@ -172,8 +190,6 @@ public class FlightService {
         Flight[] one = jdbcClient.sql(sql)
                 .param("departAirport", flightInfo.departAirport)
                 .param("arriveAirport", flightInfo.arriveAirport)
-                .param("departDate", flightInfo.departDate)
-                .param("arriveDate", flightInfo.arriveAirport)
                 .param("departDateTimeStart", flightInfo.departDateTimeStart)
                 .param("departDateTimeEnd", flightInfo.departDateTimeEnd)
                 .param("arriveDateTimeStart", flightInfo.arriveDateTimeStart)
@@ -220,10 +236,8 @@ public class FlightService {
                     "AND C.DepartDateTime > B.ArriveDateTime " +
                     "AND ABS(TIMESTAMPDIFF(MINUTE, A.ArriveDateTime, B.DepartDateTime)) >= :minConnectionTime " +
                     "AND ABS(TIMESTAMPDIFF(MINUTE, B.ArriveDateTime, C.DepartDateTime)) >= :minConnectionTime " +
-                    "AND (:departDate IS NULL OR :checkDateTime IS NULL " +
-                        "OR TIMESTAMPDIFF(MINUTE, A.DepartDateTime, :checkDepartDateTime) >= :minConnectionTime) " +
-                    "AND (:departDate IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
-                    "AND (:arriveDate IS NULL OR C.ArriveDateTime BETWEEN :arriveDateTimeStart AND :arriveDateTimeEnd) " +
+                    "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
+                    "AND (:arriveDateTimeStart IS NULL OR C.ArriveDateTime BETWEEN :arriveDateTimeStart AND :arriveDateTimeEnd) " +
                 "ORDER BY " +
                     "FinalArriveDateTime " +
                 "LIMIT :start, :count";
@@ -231,8 +245,6 @@ public class FlightService {
         Flight[] two = jdbcClient.sql(sql)
                 .param("departAirport", flightInfo.departAirport)
                 .param("arriveAirport", flightInfo.arriveAirport)
-                .param("departDate", flightInfo.departDate)
-                .param("arriveDate", flightInfo.arriveAirport)
                 .param("departDateTimeStart", flightInfo.departDateTimeStart)
                 .param("departDateTimeEnd", flightInfo.departDateTimeEnd)
                 .param("arriveDateTimeStart", flightInfo.arriveDateTimeStart)
