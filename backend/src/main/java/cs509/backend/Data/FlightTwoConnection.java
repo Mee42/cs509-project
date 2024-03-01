@@ -23,4 +23,13 @@ public class FlightTwoConnection extends FlightOneConnection {
         this.leg3DepartDateTime = leg3DepartDateTime;
         this.flightNumber3 = flightNumber3;
     }
+
+    @Override
+    public Flight[] getFlights() {
+        return new Flight[] {
+                new Flight(getStartAirport(), getConnection1(), getStartDepartDateTime(), getLeg1ArriveDateTime(), getFlightNumber1()),
+                new Flight(getConnection1(), connection2, getLeg2DepartDateTime(), leg2ArriveDateTime, getFlightNumber2()),
+                new Flight(connection2, getFinalAirport(), leg3DepartDateTime, getFinalArriveDateTime(), flightNumber3)
+        };
+    }
 }

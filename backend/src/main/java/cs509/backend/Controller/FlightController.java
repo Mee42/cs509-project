@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/flights")
@@ -20,26 +21,20 @@ public class FlightController {
     }
 
     @GetMapping("/{page}") // IGNORE - just for manual testing
-    public HashMap<String, HashMap<String, Flight[]>> getManualTest(@PathVariable("page") int page) {
+    public HashMap<String, List<Flight[]>> getManualTest(@PathVariable("page") int page) {
         String dA = "Atlanta (ATL)";
         String aA = "Tucson (TUS)";
         LocalDate dD = LocalDate.parse("2023-01-01");
-        LocalDate aD = LocalDate.parse("2023-01-01");
         LocalTime dStart = null;
         LocalTime dEnd = null;
-        LocalTime aStart = null;
-        LocalTime aEnd = null;
-        String connectionNumber = "all";
-
-        LocalDate rdD = LocalDate.parse("2023-01-01");
-
-        FlightForm t = new FlightForm(dA, aA, dD, aD, "", true, connectionNumber,
-                dStart, dEnd, aStart, aEnd);
+        String connectionNumber = "2";
+        FlightForm t = new FlightForm(dA, aA, dD, "", false, connectionNumber,
+                dStart, dEnd);
 
         return flightService.findFlightBy(t, page, 10);
     }
 
-    @GetMapping("/departAirports")
+    @GetMapping("/departAirport")
     public String[] getAllDepartAirports() {
         return flightService.getAllDepartAirports();
     }
@@ -50,7 +45,7 @@ public class FlightController {
     }
 
     @PostMapping("/submitForm/{page}")
-    public HashMap<String, HashMap<String, Flight[]>> submitForm(@RequestBody FlightForm flightForm,
+    public HashMap<String, List<Flight[]>> submitForm(@RequestBody FlightForm flightForm,
                                                                  @PathVariable("page") int page) {
         return flightService.findFlightBy(flightForm, page, 10);
     }

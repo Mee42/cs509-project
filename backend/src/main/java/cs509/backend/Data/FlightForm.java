@@ -22,55 +22,30 @@ public class FlightForm {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate departDate;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate arriveDate;
 
-    private String classSeat;  // default - Economy
+    private String classSeat;  // default - Economy - not implemented
     private boolean roundTrip; // default - false - no round trip
     private String connectionNum; // default - all - accept (0, 1, 2, all)
 
-    // only used if outbound depart date is specified
+    // only used if depart date is specified
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime departTimeStart;
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime departTimeEnd;
-    // only used if outbound arrive date is specified
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime arriveTimeStart;
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime arriveTimeEnd;
 
-    // only used if round trip is true
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate roundTripDepartDate;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate roundTripArriveDate;
+    private String sort; // not implemented
+    private String order; // not implemented
 
-    // only used if round trip is true and round trip depart date is specified
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime roundTripDepartTimeStart;
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime roundTripDepartTimeEnd;
-    // only used if round trip is true and round trip arrive date is specified
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime roundTripArriveTimeStart;
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime roundTripArriveTimeEnd;
-
-    public FlightForm(String departAirport, String arriveAirport, LocalDate departDate, LocalDate arriveDate,
-                      String classSeat, boolean roundTrip, String connectionNum, LocalTime departTimeStart,
-                      LocalTime departTimeEnd, LocalTime arriveTimeStart, LocalTime arriveTimeEnd) {
+    public FlightForm(String departAirport, String arriveAirport, LocalDate departDate, String classSeat,
+                      boolean roundTrip, String connectionNum, LocalTime departTimeStart, LocalTime departTimeEnd) {
         this.departAirport = departAirport;
         this.arriveAirport = arriveAirport;
         this.departDate = departDate;
-        this.arriveDate = arriveDate;
         this.classSeat = classSeat;
         this.roundTrip = roundTrip;
         this.connectionNum = connectionNum;
         this.departTimeStart = departTimeStart;
         this.departTimeEnd = departTimeEnd;
-        this.arriveTimeStart = arriveTimeStart;
-        this.arriveTimeEnd = arriveTimeEnd;
     }
 
 
