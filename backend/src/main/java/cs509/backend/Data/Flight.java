@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
 public class Flight {
 
-    // DTO class - type, and name of fields matter to map data for JdbcClient
+    // DTO class - type matter to map data for JdbcClient
     @JsonProperty("departAirport")
     private final String startAirport;
     @JsonProperty("arriveAirport")
