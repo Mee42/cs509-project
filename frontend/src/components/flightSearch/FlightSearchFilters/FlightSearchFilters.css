@@ -1,8 +1,32 @@
-#FlightSearch {
-    padding: 3vw;
+.FlightSearch {
+    display: flex;
+    padding: 2vw;
+    justify-content: start;
+    flex-direction: column;
+    height: 22vh;
+    margin-left: 8%;
+    margin-right: 8%;
 }
 
-#FlightSearchLowerFilters {
+.FlightSearchLowerFilters {
     display: flex;
-    justify-content: space-evenly;
+    gap: 1%;
+    justify-content: center;
+    align-items: end;
+    height: 100%;
 }
+
+.FlightSearch button {
+    background-image: linear-gradient(-180deg, lightcoral 0%, rgb(165, 42, 42) 100%);
+    border-radius: 10px;
+    color: #FFFFFF;
+    font-size: 16px;
+    width: 15%;
+    height: 70%;
+
+    cursor: pointer;
+  }
+  
+  .FlightSearch button:hover {
+    background-image: linear-gradient(-180deg, #1D95C9 0%, #17759C 100%);
+  }

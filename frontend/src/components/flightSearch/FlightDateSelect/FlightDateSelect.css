@@ -1,3 +1,20 @@
+.FlightDateSelect {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    height: 100%;
+    width: 100%;
+}
+
+.FlightDateSelect label {
+    font-weight: bold;
+    height: 35%;
+}
+
+.FlightDateSelect input {
+    height: 100%;
+}
+
 .FlightDateSelect input:hover {
     cursor: pointer;
 }

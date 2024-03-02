@@ -1,4 +1,4 @@
-import "bootstrap/dist/css/bootstrap.min.css";
+import "./FlightDateSelect.css";
 
 interface Props {
   labelText: string;

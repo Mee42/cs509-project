@@ -60,11 +60,11 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
   }, []);
 
   return (
-    <div id="FlightSearch">
-      <h1 id="FlightSearchHeader">Your Dream Trip Awaits</h1>
-      <div id="FlightSearchUpperFilters"></div>
+    <div className="FlightSearch">
+      <h1 className="FlightSearchHeader">Your Dream Trip Awaits</h1>
+      <div className="FlightSearchUpperFilters"></div>
       {/* Round trip & Coach filters go here */}
-      <div id="FlightSearchLowerFilters">
+      <div className="FlightSearchLowerFilters">
         <AirportSearchFilter
           airports={departureAirportList}
           labelText="From?"

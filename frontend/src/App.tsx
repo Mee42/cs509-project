@@ -3,6 +3,7 @@ import Navbar from "./components/general/navbar/navbar";
 import { useState } from "react";
 import { TripCard } from "./components/flightSelect/TripCard";
 import { Flight } from "./model/flight";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
