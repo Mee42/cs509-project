@@ -1,19 +1,20 @@
 import FlightSearchFilters from "./components/flightSearch/FlightSearchFilters/FlightSearchFilters";
 import Navbar from "./components/general/navbar/navbar";
 import { useState } from "react";
-import { FlightCard, Flight } from "./components/flightSelect/FlightCard";
+import { TripCard, Flight } from "./components/flightSelect/TripCard";
+import "./App.css";
 
 function App() {
-  const [flights, setFlights] = useState<Flight[]>([]);
+  const [trips, setTrips] = useState<Flight[][]>([]);
 
   return (
     <>
       <Navbar></Navbar>
-      <FlightSearchFilters setFlights={setFlights}></FlightSearchFilters>
-      <div className="FlightCardContainer">
-        {flights.length ? (
-          flights.map((flight: Flight) => {
-            return <FlightCard flight={flight} key={flight.id}></FlightCard>;
+      <FlightSearchFilters setTrips={setTrips}></FlightSearchFilters>
+      <div className="TripCardContainer">
+        {trips.length ? (
+          trips.map((trip: Flight[], index: number) => {
+            return <TripCard trip={trip} key={index}></TripCard>;
           })
         ) : (
           <></>

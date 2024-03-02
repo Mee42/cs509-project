@@ -1,0 +1,34 @@
+.TripCard { 
+    display: flex;  /* align child elements horizontally */
+    border-radius: 12px;  /* rounded card corners */
+    align-items: center;  /* align card child elements vertically */
+    gap: 5%;  /* spacing between image and trip details */
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 4px 8px;
+    background-color: white;
+    height: 20vh;
+}
+
+.TripCard:hover {
+    outline: 1px solid black;
+    background-color: lightcoral;
+    cursor: pointer;
+}
+
+.TripCardDetails {
+    padding: 2vh;  /* space between child elements and border */
+    display: flex;
+    justify-content: space-around;
+    font-weight: bold;
+    width: 60%;
+}
+
+.TripCardImage {
+    border-radius: 12px 0px 0px 12px;
+    width: 20%;
+    height: 100%;
+}
+
+.TripCardSubtext {
+    color: #5a6872;
+    font-weight: lighter;
+}

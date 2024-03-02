@@ -1,0 +1,7 @@
+.TripCardContainer {
+    margin: auto; /* centers the div */
+    width: 60vw;  /* shrinks child card size horizontally */
+    display: flex;
+    flex-direction: column;  /* aligns child cards veritcally */
+    gap: 2vh;  /* spacing between cards */
+}

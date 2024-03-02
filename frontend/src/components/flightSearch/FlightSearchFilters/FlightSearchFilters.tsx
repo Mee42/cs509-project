@@ -10,10 +10,10 @@ import {
 } from "../../../definitions";
 
 interface Props {
-  setFlights: CallableFunction;
+  setTrips: CallableFunction;
 }
 
-const FlightSearchFilters = ({ setFlights }: Props) => {
+const FlightSearchFilters = ({ setTrips }: Props) => {
   // need to get airport list from an API
   const [departureAirportList, setDepartureAirportList] = useState<string[]>(
     []
@@ -51,15 +51,15 @@ const FlightSearchFilters = ({ setFlights }: Props) => {
       `Search filters: Departure ${departureAirport} ${departureDate}, Arrival ${arrivalAirport} ${arrivalDate}`
     );
     await axios
-      .post(flightSearchEndpoint + "/10", {
+      .post(flightSearchEndpoint + "/3", {
         departAirport: "Atlanta (ATL)",
         arriveAirport: "Tucson (TUS)",
-        departDate: "2023-01-05",
-        arriveDate: "2023-01-06",
-        connectionNum: "All",
+        departDate: "2023-01-01",
+        connectionNum: "2",
       })
       .then((response) => {
-        setFlights(response.data);
+        console.log(response.data["outbound"]);
+        setTrips(response.data["outbound"]);
       })
       .catch((error) => {
         console.error(`failed to get flights: ${error}`);
