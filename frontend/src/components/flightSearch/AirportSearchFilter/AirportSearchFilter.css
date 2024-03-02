@@ -1,9 +1,7 @@
-.AirportSearchFilter {
-    height: 70%;
+.basic-single {
     width: 100%;
-    border-radius: 10px;
 }
 
-.AirportSearchFilter:hover {
+.basic-single:hover {
     cursor: pointer;
 }

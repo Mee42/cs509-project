@@ -1,4 +1,5 @@
 import "./AirportSearchFilter.css";
+import Select from "react-select";
 
 interface Props {
   airports: string[];
@@ -14,22 +15,19 @@ function AirportSearchFilter({
   inputID,
 }: Props) {
   return (
-    <select
+    <Select
       id={inputID}
-      className="AirportSearchFilter"
-      defaultValue="placeholder"
-      onChange={(event) => {
-        onSelectAirport(event.target.value);
+      className="basic-single"
+      classNamePrefix="select"
+      placeholder={labelText}
+      isSearchable={true}
+      name="color"
+      options={airports.map((airport) => ({ value: airport, label: airport }))}
+      onChange={(selectedOption) => {
+        onSelectAirport(selectedOption?.value);
         document.getElementById(inputID)!.style.outline = "";
       }}
-    >
-      <option value="placeholder" disabled hidden>
-        {labelText}
-      </option>
-      {airports.map((item) => (
-        <option key={item}>{item}</option>
-      ))}
-    </select>
+    ></Select>
   );
 }
 
