@@ -1,7 +1,8 @@
 import FlightSearchFilters from "./components/flightSearch/FlightSearchFilters/FlightSearchFilters";
 import Navbar from "./components/general/navbar/navbar";
 import { useState } from "react";
-import { TripCard, Flight } from "./components/flightSelect/TripCard";
+import { TripCard } from "./components/flightSelect/TripCard";
+import { Flight } from "./model/flight";
 import "./App.css";
 
 function App() {

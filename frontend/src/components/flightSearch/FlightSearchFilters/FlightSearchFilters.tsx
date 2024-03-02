@@ -2,12 +2,7 @@ import "./FlightSearchFilters.css";
 import AirportSearchFilter from "../AirportSearchFilter/AirportSearchFilter";
 import FlightDateSelect from "../FlightDateSelect/FlightDateSelect";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import {
-  arrivalAirportsEndpoint,
-  departureAirportsEndpoint,
-  flightSearchEndpoint,
-} from "../../../definitions";
+import * as flightSearchAPI from "../../../api/flightSearch";
 
 interface Props {
   setTrips: CallableFunction;
@@ -21,55 +16,47 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
   const [arrivalAirportList, setArrivalAirportList] = useState<string[]>([]);
   const [departureAirport, setDepartureAirport] = useState<string>("");
   const [arrivalAirport, setArrivalAirport] = useState<string>("");
-  const [arrivalDate, setArrivalDate] = useState<string>("");
   const [departureDate, setDepartureDate] = useState<string>("");
-
-  async function getArrivalAirports() {
-    await axios
-      .get(arrivalAirportsEndpoint)
-      .then((response) => {
-        setArrivalAirportList(response.data);
-      })
-      .catch((error) => {
-        console.error(`failed to get arrival airports: ${error}`);
-      });
-  }
-
-  async function getDepartureAirports() {
-    await axios
-      .get(departureAirportsEndpoint)
-      .then((response) => {
-        setDepartureAirportList(response.data);
-      })
-      .catch((error) => {
-        console.error(`failed to get departure airports: ${error}`);
-      });
-  }
+  const errorStyle = "1px solid red";
+  const departAirportSearchFilterID = "DepartAirportSearchFilter";
+  const arriveAirportSearchFilterID = "ArriveAirportSearchFilter";
+  const departureDateFilterID = "DepartureDateFilter";
 
   async function handleSearchClick() {
     console.log(
-      `Search filters: Departure ${departureAirport} ${departureDate}, Arrival ${arrivalAirport} ${arrivalDate}`
+      `Search filters: Departure ${departureAirport} ${departureDate}, Arrival ${arrivalAirport}`
     );
-    await axios
-      .post(flightSearchEndpoint + "/3", {
-        departAirport: "Atlanta (ATL)",
-        arriveAirport: "Tucson (TUS)",
-        departDate: "2023-01-01",
-        connectionNum: "2",
-      })
-      .then((response) => {
-        console.log(response.data["outbound"]);
-        setTrips(response.data["outbound"]);
-      })
-      .catch((error) => {
-        console.error(`failed to get flights: ${error}`);
-      });
+    let missingData = false;
+    if (departureAirport.length == 0) {
+      document.getElementById(departAirportSearchFilterID)!.style.outline =
+        errorStyle;
+      missingData = true;
+    }
+    if (arrivalAirport.length == 0) {
+      document.getElementById(arriveAirportSearchFilterID)!.style.outline =
+        errorStyle;
+      missingData = true;
+    }
+    if (departureDate.length == 0) {
+      document.getElementById(departureDateFilterID)!.style.outline =
+        errorStyle;
+      missingData = true;
+    }
+
+    if (!missingData) {
+      flightSearchAPI.getTrips(
+        departureAirport,
+        arrivalAirport,
+        departureDate,
+        setTrips
+      );
+    }
   }
 
   // execute on page load
   useEffect(() => {
-    getArrivalAirports();
-    getDepartureAirports();
+    flightSearchAPI.getArrivalAirports(setArrivalAirportList);
+    flightSearchAPI.getDepartureAirports(setDepartureAirportList);
   }, []);
 
   return (
@@ -82,19 +69,18 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
           airports={departureAirportList}
           labelText="From?"
           onSelectAirport={setDepartureAirport}
+          inputID={departAirportSearchFilterID}
         ></AirportSearchFilter>
         <AirportSearchFilter
           airports={arrivalAirportList}
           labelText="To?"
           onSelectAirport={setArrivalAirport}
+          inputID={arriveAirportSearchFilterID}
         ></AirportSearchFilter>
         <FlightDateSelect
           labelText="Departure"
           onSelectDate={setDepartureDate}
-        ></FlightDateSelect>
-        <FlightDateSelect
-          labelText="Arrival"
-          onSelectDate={setArrivalDate}
+          inputID={departureDateFilterID}
         ></FlightDateSelect>
         <button onClick={handleSearchClick}>Go!</button>
       </div>
