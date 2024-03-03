@@ -29,8 +29,8 @@ export function getTotalTravelTime(trip: Flight[]) {
 
 export function msToHoursMinutes(ms: number) {
   return [
-    Math.floor((ms / (1000 * 60)) % 60),
     Math.floor((ms / (1000 * 60 * 60)) % 24),
+    Math.floor((ms / (1000 * 60)) % 60),
   ];
 }
 
