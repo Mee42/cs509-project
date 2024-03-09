@@ -1,25 +1,21 @@
 package cs509.backend.Service;
 
 import cs509.backend.Data.*;
-import cs509.backend.Repositories.FlightRepository;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Service
 public class FlightService {
-    private final FlightRepository flightRepository;
     private final JdbcClient jdbcClient;
 
     public record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd) {}
 
-    public FlightService(FlightRepository flightRepository, JdbcClient jdbcClient) {
-        this.flightRepository = flightRepository;
+    public FlightService(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 
@@ -197,10 +193,18 @@ public class FlightService {
     }
 
     public String[] getAllDepartAirports() {
-        return flightRepository.getAllDepartAirport();
+        String sql = "SELECT DISTINCT(DepartAirport) FROM deltas " +
+                    "UNION " +
+                    "SELECT DISTINCT(DepartAirport) FROM southwests " +
+                    "ORDER BY DepartAirport";
+        return jdbcClient.sql(sql).query(String.class).list().toArray(new String[0]);
     }
 
     public String[] getAllArriveAirports() {
-        return flightRepository.getAllArriveAirport();
+        String sql = "SELECT DISTINCT(ArriveAirport) FROM deltas " +
+                    "UNION " +
+                    "SELECT DISTINCT(ArriveAirport) FROM southwests " +
+                    "ORDER BY ArriveAirport";
+        return jdbcClient.sql(sql).query(String.class).list().toArray(new String[0]);
     }
 }
