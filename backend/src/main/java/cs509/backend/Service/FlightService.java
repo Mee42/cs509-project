@@ -14,8 +14,10 @@ import java.util.*;
 public class FlightService {
     private final JdbcClient jdbcClient;
 
+    // must be matching field names with named parameters for jdbc
     public record FlightInfo(String departAirport, String arriveAirport,
-                             LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd) {}
+                             LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd,
+                             int start, int count, int minConnTime, int maxConnTime) {}
 
     public FlightService(DataSource dataSource) {
         this.jdbcClient = JdbcClient.create(dataSource);
@@ -30,8 +32,7 @@ public class FlightService {
         final int minConnectionTime = 60; // 1h in minute
         final int maxConnectionTime = 1440; // 24h in minute
 
-        List<Flight[]> flight = findOneWayFlights(numberOfConnection, getFlightInfo(flightForm), start, count,
-                minConnectionTime, maxConnectionTime);
+        List<Flight[]> flight = findOneWayFlights(numberOfConnection, getFlightInfo(flightForm, start, count, minConnectionTime, maxConnectionTime));
 
         HashMap<String, List<Flight[]>> flightDetails = new HashMap<>();
         if (flightForm.isRoundTrip())
@@ -48,28 +49,28 @@ public class FlightService {
         return (windowTime != null) ? LocalDateTime.of(baseDate, windowTime) : (defaultTime != null) ? LocalDateTime.of(baseDate, defaultTime) : null;
     }
 
-    public FlightInfo getFlightInfo(FlightForm flightForm) {
+    public FlightInfo getFlightInfo(FlightForm flightForm, int start, int count, int minConnTime, int maxConnTime) {
         LocalDate departDate = flightForm.getDepartDate();
         LocalDateTime departStartWindow = checkWindowTime(flightForm.getDepartTimeStart(), departDate, LocalTime.parse("00:00:00"));
         LocalDateTime departEndWindow = checkWindowTime(flightForm.getDepartTimeEnd(), departDate, LocalTime.parse("23:59:00"));
 
-        return new FlightInfo(flightForm.getDepartAirport(), flightForm.getArriveAirport(), departStartWindow, departEndWindow);
+        return new FlightInfo(flightForm.getDepartAirport(), flightForm.getArriveAirport(),
+                departStartWindow, departEndWindow, start, count, minConnTime, maxConnTime);
     }
 
-    public List<Flight[]> findOneWayFlights(String numberOfConnection, FlightInfo flightInfo,
-                                                       int start, int count, int minConnTime, int maxConnTime) {
+    public List<Flight[]> findOneWayFlights(String numberOfConnection, FlightInfo flightInfo) {
         List<Flight[]> flightList = new ArrayList<>();
         switch (numberOfConnection) {
             case "2":
-                Flight[] two = findFlightWithTwoConnection(flightInfo, minConnTime, maxConnTime, start, count);
+                Flight[] two = findFlightWithTwoConnection(flightInfo);
                 for (Flight t : two)
                     flightList.add(t.getFlights());
             case "1":
-                Flight[] one = findFlightWithOneConnection(flightInfo, minConnTime, maxConnTime, start, count);
+                Flight[] one = findFlightWithOneConnection(flightInfo);
                 for (Flight t : one)
                     flightList.add(t.getFlights());
             case "0":
-                Flight[] no = findFlightWithNoConnection(flightInfo, start, count);
+                Flight[] no = findFlightWithNoConnection(flightInfo);
                 for (Flight t : no)
                     flightList.add(t.getFlights());
             default:
@@ -77,7 +78,7 @@ public class FlightService {
         }
     }
 
-    public Flight[] findFlightWithNoConnection(FlightInfo flightInfo, int start, int count) {
+    public Flight[] findFlightWithNoConnection(FlightInfo flightInfo) {
         String sql =
                 "WITH CombinedFlights AS (SELECT * FROM deltas UNION SELECT * FROM southwests) " +
                 "SELECT " +
@@ -95,17 +96,12 @@ public class FlightService {
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)
-                .param("departAirport", flightInfo.departAirport)
-                .param("arriveAirport", flightInfo.arriveAirport)
-                .param("departDateTimeStart", flightInfo.departDateTimeStart)
-                .param("departDateTimeEnd", flightInfo.departDateTimeEnd)
-                .param("start", start)
-                .param("count", count)
+                .paramSource(flightInfo)
                 .query(Flight.class)
                 .list().toArray(new Flight[0]);
     }
 
-    public FlightOneConnection[] findFlightWithOneConnection(FlightInfo flightInfo, int minConnTime, int maxConnTime, int start, int count) {
+    public FlightOneConnection[] findFlightWithOneConnection(FlightInfo flightInfo) {
         String sql =
                 "WITH CombinedFlights AS (SELECT * FROM deltas UNION SELECT * FROM southwests) " +
                 "SELECT " +
@@ -133,19 +129,12 @@ public class FlightService {
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)
-                .param("departAirport", flightInfo.departAirport)
-                .param("arriveAirport", flightInfo.arriveAirport)
-                .param("departDateTimeStart", flightInfo.departDateTimeStart)
-                .param("departDateTimeEnd", flightInfo.departDateTimeEnd)
-                .param("minConnTime", minConnTime)
-                .param("maxConnTime", maxConnTime)
-                .param("start", start)
-                .param("count", count)
+                .paramSource(flightInfo)
                 .query(FlightOneConnection.class)
                 .list().toArray(new FlightOneConnection[0]);
     }
 
-    public FlightTwoConnection[] findFlightWithTwoConnection(FlightInfo flightInfo, int minConnTime, int maxConnTime, int start, int count) {
+    public FlightTwoConnection[] findFlightWithTwoConnection(FlightInfo flightInfo) {
         String sql =
                 "WITH CombinedFlights AS ( SELECT * from deltas UNION SELECT * from southwests) " +
                 "SELECT " +
@@ -182,14 +171,7 @@ public class FlightService {
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)
-                .param("departAirport", flightInfo.departAirport)
-                .param("arriveAirport", flightInfo.arriveAirport)
-                .param("departDateTimeStart", flightInfo.departDateTimeStart)
-                .param("departDateTimeEnd", flightInfo.departDateTimeEnd)
-                .param("minConnTime", minConnTime)
-                .param("maxConnTime", maxConnTime)
-                .param("start", start)
-                .param("count", count)
+                .paramSource(flightInfo)
                 .query(FlightTwoConnection.class)
                 .list().toArray(new FlightTwoConnection[0]);
     }
