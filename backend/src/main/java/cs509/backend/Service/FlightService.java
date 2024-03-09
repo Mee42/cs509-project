@@ -15,9 +15,9 @@ public class FlightService {
     private final JdbcClient jdbcClient;
 
     // must be matching field names with named parameters for jdbc
-    public record FlightInfo(String departAirport, String arriveAirport,
+    private record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd,
-                             int start, int count, int minConnTime, int maxConnTime) {}
+                             int start, int count, int minConnTime, int maxConnTime, String sort, String orderBy) {}
 
     public FlightService(DataSource dataSource) {
         this.jdbcClient = JdbcClient.create(dataSource);
@@ -32,7 +32,8 @@ public class FlightService {
         final int minConnectionTime = 60; // 1h in minute
         final int maxConnectionTime = 1440; // 24h in minute
 
-        List<Flight[]> flight = findOneWayFlights(numberOfConnection, getFlightInfo(flightForm, start, count, minConnectionTime, maxConnectionTime));
+        List<Flight[]> flight = findOneWayFlights(numberOfConnection,
+                getFlightInfo(flightForm, start, count, minConnectionTime, maxConnectionTime));
 
         HashMap<String, List<Flight[]>> flightDetails = new HashMap<>();
         if (flightForm.isRoundTrip())
@@ -49,16 +50,16 @@ public class FlightService {
         return (windowTime != null) ? LocalDateTime.of(baseDate, windowTime) : (defaultTime != null) ? LocalDateTime.of(baseDate, defaultTime) : null;
     }
 
-    public FlightInfo getFlightInfo(FlightForm flightForm, int start, int count, int minConnTime, int maxConnTime) {
+    private FlightInfo getFlightInfo(FlightForm flightForm, int start, int count, int minConnTime, int maxConnTime) {
         LocalDate departDate = flightForm.getDepartDate();
         LocalDateTime departStartWindow = checkWindowTime(flightForm.getDepartTimeStart(), departDate, LocalTime.parse("00:00:00"));
         LocalDateTime departEndWindow = checkWindowTime(flightForm.getDepartTimeEnd(), departDate, LocalTime.parse("23:59:00"));
 
-        return new FlightInfo(flightForm.getDepartAirport(), flightForm.getArriveAirport(),
-                departStartWindow, departEndWindow, start, count, minConnTime, maxConnTime);
+        return new FlightInfo(flightForm.getDepartAirport(), flightForm.getArriveAirport(), departStartWindow, departEndWindow,
+                start, count, minConnTime, maxConnTime, flightForm.getSort(), flightForm.getOrder());
     }
 
-    public List<Flight[]> findOneWayFlights(String numberOfConnection, FlightInfo flightInfo) {
+    private List<Flight[]> findOneWayFlights(String numberOfConnection, FlightInfo flightInfo) {
         List<Flight[]> flightList = new ArrayList<>();
         switch (numberOfConnection) {
             case "2":
@@ -78,7 +79,7 @@ public class FlightService {
         }
     }
 
-    public Flight[] findFlightWithNoConnection(FlightInfo flightInfo) {
+    private Flight[] findFlightWithNoConnection(FlightInfo flightInfo) {
         String sql =
                 "WITH CombinedFlights AS (SELECT * FROM deltas UNION SELECT * FROM southwests) " +
                 "SELECT " +
@@ -92,7 +93,11 @@ public class FlightService {
                     "AND ArriveAirport = :arriveAirport " +
                     "AND (:departDateTimeStart IS NULL OR DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
-                    "FinalArriveDateTime " +
+                    "CASE " +
+                        "WHEN (:sort = 'depart') THEN StartDepartDateTime " +
+                        "WHEN (:sort = 'travelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "ELSE FinalArriveDateTime " +
+                    "END * CASE WHEN (:orderBy = 'asc') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)
@@ -101,7 +106,7 @@ public class FlightService {
                 .list().toArray(new Flight[0]);
     }
 
-    public FlightOneConnection[] findFlightWithOneConnection(FlightInfo flightInfo) {
+    private FlightOneConnection[] findFlightWithOneConnection(FlightInfo flightInfo) {
         String sql =
                 "WITH CombinedFlights AS (SELECT * FROM deltas UNION SELECT * FROM southwests) " +
                 "SELECT " +
@@ -125,7 +130,11 @@ public class FlightService {
                     "AND ABS(TIMESTAMPDIFF(MINUTE, A.ArriveDateTime, B.DepartDateTime)) BETWEEN :minConnTime AND :maxConnTime " +
                     "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
-                    "FinalArriveDateTime " +
+                    "CASE " +
+                        "WHEN (:sort = 'depart') THEN StartDepartDateTime " +
+                        "WHEN (:sort = 'travelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "ELSE FinalArriveDateTime " +
+                    "END * CASE WHEN (:orderBy = 'asc') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)
@@ -134,7 +143,7 @@ public class FlightService {
                 .list().toArray(new FlightOneConnection[0]);
     }
 
-    public FlightTwoConnection[] findFlightWithTwoConnection(FlightInfo flightInfo) {
+    private FlightTwoConnection[] findFlightWithTwoConnection(FlightInfo flightInfo) {
         String sql =
                 "WITH CombinedFlights AS ( SELECT * from deltas UNION SELECT * from southwests) " +
                 "SELECT " +
@@ -167,7 +176,11 @@ public class FlightService {
                     "AND ABS(TIMESTAMPDIFF(MINUTE, B.ArriveDateTime, C.DepartDateTime)) BETWEEN :minConnTime AND :maxConnTime " +
                     "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
-                    "FinalArriveDateTime " +
+                    "CASE " +
+                        "WHEN (:sort = 'depart') THEN StartDepartDateTime " +
+                        "WHEN (:sort = 'travelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "ELSE FinalArriveDateTime " +
+                    "END * CASE WHEN (:orderBy = 'asc') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)

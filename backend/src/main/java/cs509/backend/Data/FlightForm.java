@@ -23,9 +23,8 @@ public class FlightForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate departDate;
 
-    private String classSeat;  // default - Economy - not implemented
     private boolean roundTrip; // default - false - no round trip
-    private String connectionNum; // default - all - accept (0, 1, 2, all)
+    private String connectionNum; // default 2 - accept (0, 1, 2)
 
     // only used if depart date is specified
     @DateTimeFormat(pattern = "HH:mm:ss")
@@ -33,27 +32,26 @@ public class FlightForm {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime departTimeEnd;
 
-    private String sort; // not implemented
-    private String order; // not implemented
+    private String sort; // default arrive - accept (depart, arrive, travelTime)
+    private String order; // default asc - accept (asc, desc)
 
-    public FlightForm(String departAirport, String arriveAirport, LocalDate departDate, String classSeat,
+    public FlightForm(String departAirport, String arriveAirport, LocalDate departDate,
                       boolean roundTrip, String connectionNum, LocalTime departTimeStart, LocalTime departTimeEnd) {
         this.departAirport = departAirport;
         this.arriveAirport = arriveAirport;
         this.departDate = departDate;
-        this.classSeat = classSeat;
         this.roundTrip = roundTrip;
         this.connectionNum = connectionNum;
         this.departTimeStart = departTimeStart;
         this.departTimeEnd = departTimeEnd;
     }
 
-
     @PostConstruct
     private void initializeDefaultValue() {
-        classSeat = "Economy";
         roundTrip = false;
-        connectionNum = "All";
+        connectionNum = "2";
+        sort = "arrive";
+        order = "asc";
     }
 
 }

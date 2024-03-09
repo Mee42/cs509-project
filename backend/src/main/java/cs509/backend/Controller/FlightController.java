@@ -27,9 +27,9 @@ public class FlightController {
         LocalDate dD = LocalDate.parse("2023-01-01");
         LocalTime dStart = null;
         LocalTime dEnd = null;
-        String connectionNumber = "2";
-        FlightForm t = new FlightForm(dA, aA, dD, "", false, connectionNumber,
-                dStart, dEnd);
+        String connectionNumber = "1";
+        FlightForm t = new FlightForm(dA, aA, dD, false, connectionNumber,
+                dStart, dEnd, "travelTime", "desc");
 
         return flightService.findFlightBy(t, page, 10);
     }
