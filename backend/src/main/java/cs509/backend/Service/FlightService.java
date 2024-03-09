@@ -3,6 +3,8 @@ package cs509.backend.Service;
 import cs509.backend.Data.*;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
+
+import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,8 +17,8 @@ public class FlightService {
     public record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd) {}
 
-    public FlightService(JdbcClient jdbcClient) {
-        this.jdbcClient = jdbcClient;
+    public FlightService(DataSource dataSource) {
+        this.jdbcClient = JdbcClient.create(dataSource);
     }
 
     public HashMap<String, List<Flight[]>> findFlightBy(FlightForm flightForm, int page, int count) {
