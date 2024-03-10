@@ -1,19 +1,18 @@
 package cs509.backend.Controller;
 
-import cs509.backend.Data.Flight;
 import cs509.backend.Data.FlightForm;
 import cs509.backend.Service.FlightService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/flights")
 @CrossOrigin
 public class FlightController {
-
     private final FlightService flightService;
 
     public FlightController(FlightService flightService) {
@@ -21,17 +20,20 @@ public class FlightController {
     }
 
     @GetMapping("/{page}") // IGNORE - just for manual testing
-    public HashMap<String, List<Flight[]>> getManualTest(@PathVariable("page") int page) {
+    public ResponseEntity<?> getManualTest(@PathVariable("page") int page) {
         String dA = "Atlanta (ATL)";
         String aA = "Tucson (TUS)";
         LocalDate dD = LocalDate.parse("2023-01-01");
         LocalTime dStart = null;
         LocalTime dEnd = null;
-        String connectionNumber = "1";
-        FlightForm t = new FlightForm(dA, aA, dD, false, connectionNumber,
-                dStart, dEnd, "depart", "desc");
+        String connectionNumber = "0";
+        FlightForm flightForm = new FlightForm(dA, aA, dD, false, connectionNumber,
+                dStart, dEnd, "depart", "asc");
 
-        return flightService.findFlightBy(t, page, 10);
+        String msg = flightForm.checkAllFields();
+        if (msg == null)
+            return ResponseEntity.ok(flightService.findFlightBy(flightForm, page, 10));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error message: " + msg);
     }
 
     @GetMapping("/departAirport")
@@ -45,8 +47,10 @@ public class FlightController {
     }
 
     @PostMapping("/submitForm/{page}")
-    public HashMap<String, List<Flight[]>> submitForm(@RequestBody FlightForm flightForm,
-                                                                 @PathVariable("page") int page) {
-        return flightService.findFlightBy(flightForm, page, 10);
+    public ResponseEntity<?> submitForm(@RequestBody FlightForm flightForm, @PathVariable("page") int page) {
+        String msg = flightForm.checkAllFields();
+        if (msg == null)
+            return ResponseEntity.ok(flightService.findFlightBy(flightForm, page, 10));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error message: " + msg);
     }
 }
