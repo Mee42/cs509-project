@@ -29,7 +29,7 @@ public class FlightController {
         LocalTime dEnd = null;
         String connectionNumber = "1";
         FlightForm t = new FlightForm(dA, aA, dD, false, connectionNumber,
-                dStart, dEnd, "travelTime", "desc");
+                dStart, dEnd, "depart", "desc");
 
         return flightService.findFlightBy(t, page, 10);
     }

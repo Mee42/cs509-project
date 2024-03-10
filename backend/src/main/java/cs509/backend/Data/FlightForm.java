@@ -1,5 +1,7 @@
 package cs509.backend.Data;
 
+import cs509.backend.Enum.OrderBy;
+import cs509.backend.Enum.SortBy;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,8 +25,8 @@ public class FlightForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate departDate;
 
-    private boolean roundTrip; // default - false - no round trip
-    private String connectionNum; // default 2 - accept (0, 1, 2)
+    private boolean roundTrip = false;  // default - false - no round trip
+    private String connectionNum = "2"; // default 2 - accept (0, 1, 2)
 
     // only used if depart date is specified
     @DateTimeFormat(pattern = "HH:mm:ss")
@@ -32,26 +34,15 @@ public class FlightForm {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime departTimeEnd;
 
-    private String sort; // default arrive - accept (depart, arrive, travelTime)
-    private String order; // default asc - accept (asc, desc)
+    private String sort = "arrive"; // default arrive - accept (depart, arrive, travelTime)
+    private String order = "asc";   // default asc - accept (asc, desc)
 
-    public FlightForm(String departAirport, String arriveAirport, LocalDate departDate,
-                      boolean roundTrip, String connectionNum, LocalTime departTimeStart, LocalTime departTimeEnd) {
-        this.departAirport = departAirport;
-        this.arriveAirport = arriveAirport;
-        this.departDate = departDate;
-        this.roundTrip = roundTrip;
-        this.connectionNum = connectionNum;
-        this.departTimeStart = departTimeStart;
-        this.departTimeEnd = departTimeEnd;
+    public SortBy getSort() {
+        return (sort.equals("depart")) ? SortBy.Depart : (sort.equals("travelTime")) ? SortBy.TravelTime : SortBy.Arrive;
     }
 
-    @PostConstruct
-    private void initializeDefaultValue() {
-        roundTrip = false;
-        connectionNum = "2";
-        sort = "arrive";
-        order = "asc";
+    public OrderBy getOrder() {
+        return (order.equals("asc")) ? OrderBy.ASC : OrderBy.DESC;
     }
 
 }

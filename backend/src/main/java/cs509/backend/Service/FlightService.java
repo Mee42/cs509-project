@@ -1,6 +1,7 @@
 package cs509.backend.Service;
 
 import cs509.backend.Data.*;
+import cs509.backend.Enum.OrderBy;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,7 @@ public class FlightService {
         LocalDateTime departEndWindow = checkWindowTime(flightForm.getDepartTimeEnd(), departDate, LocalTime.parse("23:59:00"));
 
         return new FlightInfo(flightForm.getDepartAirport(), flightForm.getArriveAirport(), departStartWindow, departEndWindow,
-                start, count, minConnTime, maxConnTime, flightForm.getSort(), flightForm.getOrder());
+                start, count, minConnTime, maxConnTime, flightForm.getSort().toString(), flightForm.getOrder().toString());
     }
 
     private List<Flight[]> findOneWayFlights(String numberOfConnection, FlightInfo flightInfo) {
@@ -94,10 +95,10 @@ public class FlightService {
                     "AND (:departDateTimeStart IS NULL OR DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
                     "CASE " +
-                        "WHEN (:sort = 'depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'travelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
+                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'asc') THEN 1 ELSE -1 END " +
+                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)
@@ -131,10 +132,10 @@ public class FlightService {
                     "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
                     "CASE " +
-                        "WHEN (:sort = 'depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'travelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
+                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'asc') THEN 1 ELSE -1 END " +
+                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)
@@ -177,10 +178,10 @@ public class FlightService {
                     "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
                     "CASE " +
-                        "WHEN (:sort = 'depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'travelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
+                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'asc') THEN 1 ELSE -1 END " +
+                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
 
         return jdbcClient.sql(sql)
