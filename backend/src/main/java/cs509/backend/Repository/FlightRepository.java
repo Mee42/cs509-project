@@ -117,6 +117,21 @@ public class FlightRepository {
                 .list().toArray(new FlightTwoConnection[0]);
     }
 
+    public Integer getFlightId(Flight flight) {
+        String sql = "WITH CombinedFlights AS (SELECT * from deltas UNION SELECT * from southwests) " +
+                "SELECT Id " +
+                "FROM CombinedFlights " +
+                "WHERE DepartAirport = :startAirport " +
+                    "AND ArriveAirport = :finalAirport " +
+                    "AND DepartDateTime = :startDepartDateTime " +
+                    "AND ArriveDateTime = :finalArriveDateTime " +
+                    "AND FlightNumber = :flightNumber1";
+        return jdbcClient.sql(sql)
+                .paramSource(flight)
+                .query(Integer.class)
+                .stream().findAny().orElse(null);
+    }
+
     public String[] getAllDepartAirports() {
         String sql = "SELECT DISTINCT(DepartAirport) FROM deltas " +
                 "UNION " +

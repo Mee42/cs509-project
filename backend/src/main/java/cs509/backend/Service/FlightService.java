@@ -3,6 +3,7 @@ package cs509.backend.Service;
 import cs509.backend.Data.Flight;
 import cs509.backend.Data.FlightForm;
 import cs509.backend.Repository.FlightRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,17 +13,15 @@ import java.util.List;
 import java.util.HashMap;
 
 @Service
+@AllArgsConstructor
 public class FlightService {
+
     private final FlightRepository flightRepository;
 
     // must be matching field names with named parameters for jdbc
     public record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd,
                              int start, int count, int minConnTime, int maxConnTime, String sort, String orderBy) {}
-
-    public FlightService(FlightRepository flightRepository) {
-        this.flightRepository = flightRepository;
-    }
 
     public HashMap<String, List<Flight[]>> findFlightBy(FlightForm flightForm, int page, int count) {
         // recheck just in case depart airport or arrive airport is not given.
