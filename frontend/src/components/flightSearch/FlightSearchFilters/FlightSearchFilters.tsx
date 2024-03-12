@@ -3,15 +3,13 @@ import AirportSearchFilter from "../AirportSearchFilter/AirportSearchFilter";
 import FlightDateSelect from "../FlightDateSelect/FlightDateSelect";
 import { useEffect, useState } from "react";
 import * as flightSearchAPI from "../../../api/flightSearch";
+import { FlightSearchQuery } from "../../../model/flightSearchQuery";
 
 interface Props {
-  setTrips: CallableFunction;
-  makingRoundTripSelection: boolean; 
-  setMakingRoundTripSelection: CallableFunction
+  setSearchQueries: CallableFunction;
 }
 
-const FlightSearchFilters = ({ setTrips, makingRoundTripSelection, setMakingRoundTripSelection }: Props) => {
-  // need to get airport list from an API
+const FlightSearchFilters = ({ setSearchQueries }: Props) => {
   const [departureAirportList, setDepartureAirportList] = useState<string[]>(
     []
   );
@@ -20,13 +18,42 @@ const FlightSearchFilters = ({ setTrips, makingRoundTripSelection, setMakingRoun
   const [arrivalAirport, setArrivalAirport] = useState<string>("");
   const [departureDate, setDepartureDate] = useState<string>("");
   const [returnDate, setReturnDate] = useState<string>("");
+  const [connectionNum, setConnectionNum] = useState<number>(0);
+  const [makingRoundTripSelection, setMakingRoundTripSelection] =
+    useState<boolean>(false);
   const errorStyle = "1px solid red";
   const departAirportSearchFilterID = "DepartAirportSearchFilter";
   const arriveAirportSearchFilterID = "ArriveAirportSearchFilter";
   const departureDateFilterID = "DepartureDateFilter";
   const returnDateFilterID = "ReturnDateFilter";
 
-  async function handleSearchClick() {
+  function packSearchQueries() {
+    let searchQueries: FlightSearchQuery[] = [
+      new FlightSearchQuery(
+        arrivalAirport,
+        departureAirport,
+        departureDate,
+        "",
+        connectionNum
+      ),
+    ];
+
+    if (makingRoundTripSelection) {
+      searchQueries.push(
+        new FlightSearchQuery(
+          departureAirport,
+          arrivalAirport,
+          returnDate,
+          "",
+          connectionNum
+        )
+      );
+    }
+
+    setSearchQueries(searchQueries);
+  }
+
+  function handleSearchClick() {
     console.log(
       `Search filters: Departure ${departureAirport} ${departureDate}, Arrival ${arrivalAirport}`
     );
@@ -52,14 +79,7 @@ const FlightSearchFilters = ({ setTrips, makingRoundTripSelection, setMakingRoun
     }
 
     if (!missingData) {
-      flightSearchAPI.getTrips(
-        departureAirport,
-        arrivalAirport,
-        departureDate,
-        2,
-        1,
-        setTrips
-      );
+      packSearchQueries();
     }
   }
 
@@ -76,11 +96,19 @@ const FlightSearchFilters = ({ setTrips, makingRoundTripSelection, setMakingRoun
         <select
           onChange={() => {
             setMakingRoundTripSelection(!makingRoundTripSelection);
-            setTrips({});
           }}
         >
-          <option value={1}>One-Way</option>
-          <option value={2}>Round Trip</option>
+          <option>One-Way</option>
+          <option>Round Trip</option>
+        </select>
+        <select
+          onChange={(event) => {
+            setConnectionNum(Number(event.target.value));
+          }}
+        >
+          <option>0</option>
+          <option>1</option>
+          <option>2</option>
         </select>
       </div>
       <div className="FlightSearchLowerFilters">

@@ -5,13 +5,20 @@ import * as helper from "./TripCardFuncs";
 interface Props {
   trip: Flight[];
   onClick?: CallableFunction;
+  isRemovable?: boolean;
+  onRemoveClick?: CallableFunction;
 }
 
-export function TripCard({ trip, onClick = () => {} }: Props) {
+export function TripCard({
+  trip,
+  onClick = () => {},
+  isRemovable = true,
+  onRemoveClick = () => {},
+}: Props) {
   const [TravelTimeHours, TravelTimeMinutes] = helper.msToHoursMinutes(
     helper.getTotalTravelTime(trip)
   );
-  
+
   return (
     <div
       className="TripCard"
