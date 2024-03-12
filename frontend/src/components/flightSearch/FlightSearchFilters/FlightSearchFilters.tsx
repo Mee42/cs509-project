@@ -17,10 +17,14 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
   const [departureAirport, setDepartureAirport] = useState<string>("");
   const [arrivalAirport, setArrivalAirport] = useState<string>("");
   const [departureDate, setDepartureDate] = useState<string>("");
+  const [returnDate, setReturnDate] = useState<string>("");
   const errorStyle = "1px solid red";
   const departAirportSearchFilterID = "DepartAirportSearchFilter";
   const arriveAirportSearchFilterID = "ArriveAirportSearchFilter";
   const departureDateFilterID = "DepartureDateFilter";
+  const returnDateFilterID = "ReturnDateFilter";
+  const [makingRoundTripSelection, setMakingRoundTripSelection] =
+    useState<boolean>(false);
 
   async function handleSearchClick() {
     console.log(
@@ -42,12 +46,18 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
         errorStyle;
       missingData = true;
     }
+    if (makingRoundTripSelection && returnDate.length == 0) {
+      document.getElementById(returnDateFilterID)!.style.outline = errorStyle;
+      missingData = true;
+    }
 
     if (!missingData) {
       flightSearchAPI.getTrips(
         departureAirport,
         arrivalAirport,
         departureDate,
+        2,
+        1,
         setTrips
       );
     }
@@ -62,8 +72,17 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
   return (
     <div className="FlightSearch">
       <h1 className="FlightSearchHeader">Your Dream Trip Awaits</h1>
-      <div className="FlightSearchUpperFilters"></div>
-      {/* Round trip & Coach filters go here */}
+      <div className="FlightSearchUpperFilters">
+        <select
+          onChange={() => {
+            setMakingRoundTripSelection(!makingRoundTripSelection);
+            setTrips({});
+          }}
+        >
+          <option value={1}>One-Way</option>
+          <option value={2}>Round Trip</option>
+        </select>
+      </div>
       <div className="FlightSearchLowerFilters">
         <AirportSearchFilter
           airports={departureAirportList}
@@ -82,6 +101,13 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
           onSelectDate={setDepartureDate}
           inputID={departureDateFilterID}
         ></FlightDateSelect>
+        {makingRoundTripSelection && (
+          <FlightDateSelect
+            labelText="Return"
+            onSelectDate={setReturnDate}
+            inputID={returnDateFilterID}
+          ></FlightDateSelect>
+        )}
         <button onClick={handleSearchClick}>Go!</button>
       </div>
     </div>

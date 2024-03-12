@@ -33,14 +33,16 @@ export async function getTrips(
   departAirport: string,
   arriveAirport: string,
   departDate: string,
+  batchNum: number,
+  connectionNum: number,
   setTrips: CallableFunction
 ) {
   await axios
-    .post(flightSearchEndpoint + "/3", {
+    .post(flightSearchEndpoint + "/" + batchNum, {
       departAirport: departAirport,
       arriveAirport: arriveAirport,
       departDate: departDate,
-      connectionNum: "2",
+      connectionNum: connectionNum.toString(),
     })
     .then((response) => {
       const trips = response.data["outbound"];
