@@ -5,3 +5,7 @@
     flex-direction: column;  /* aligns child cards veritcally */
     gap: 2vh;  /* spacing between cards */
 }
+
+.SelectedTrips {
+    background-color: black;
+}

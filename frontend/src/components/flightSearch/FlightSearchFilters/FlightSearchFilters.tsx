@@ -6,9 +6,11 @@ import * as flightSearchAPI from "../../../api/flightSearch";
 
 interface Props {
   setTrips: CallableFunction;
+  makingRoundTripSelection: boolean; 
+  setMakingRoundTripSelection: CallableFunction
 }
 
-const FlightSearchFilters = ({ setTrips }: Props) => {
+const FlightSearchFilters = ({ setTrips, makingRoundTripSelection, setMakingRoundTripSelection }: Props) => {
   // need to get airport list from an API
   const [departureAirportList, setDepartureAirportList] = useState<string[]>(
     []
@@ -23,8 +25,6 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
   const arriveAirportSearchFilterID = "ArriveAirportSearchFilter";
   const departureDateFilterID = "DepartureDateFilter";
   const returnDateFilterID = "ReturnDateFilter";
-  const [makingRoundTripSelection, setMakingRoundTripSelection] =
-    useState<boolean>(false);
 
   async function handleSearchClick() {
     console.log(
@@ -89,23 +89,27 @@ const FlightSearchFilters = ({ setTrips }: Props) => {
           labelText="From?"
           onSelectAirport={setDepartureAirport}
           inputID={departAirportSearchFilterID}
+          defaultInputValue="Atlanta (ATL)"
         ></AirportSearchFilter>
         <AirportSearchFilter
           airports={arrivalAirportList}
           labelText="To?"
           onSelectAirport={setArrivalAirport}
           inputID={arriveAirportSearchFilterID}
+          defaultInputValue="Tucson (TUS)"
         ></AirportSearchFilter>
         <FlightDateSelect
           labelText="Departure"
           onSelectDate={setDepartureDate}
           inputID={departureDateFilterID}
+          defaultInputValue={"2023-01-01"}
         ></FlightDateSelect>
         {makingRoundTripSelection && (
           <FlightDateSelect
             labelText="Return"
             onSelectDate={setReturnDate}
             inputID={returnDateFilterID}
+            defaultInputValue={"2023-01-01"}
           ></FlightDateSelect>
         )}
         <button onClick={handleSearchClick}>Go!</button>

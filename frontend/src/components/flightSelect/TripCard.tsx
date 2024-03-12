@@ -4,15 +4,21 @@ import * as helper from "./TripCardFuncs";
 
 interface Props {
   trip: Flight[];
+  onClick?: CallableFunction;
 }
 
-export function TripCard({ trip }: Props) {
+export function TripCard({ trip, onClick = () => {} }: Props) {
   const [TravelTimeHours, TravelTimeMinutes] = helper.msToHoursMinutes(
     helper.getTotalTravelTime(trip)
   );
-
+  
   return (
-    <div className="TripCard">
+    <div
+      className="TripCard"
+      onClick={() => {
+        onClick(trip);
+      }}
+    >
       <img className="TripCardImage" src={helper.getFlightImageURI()}></img>
       <div className="TripCardDetails">
         <div className="TripStartEnd">
