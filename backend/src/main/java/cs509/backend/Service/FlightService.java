@@ -1,30 +1,30 @@
 package cs509.backend.Service;
 
-import cs509.backend.Data.*;
-import cs509.backend.Enum.OrderBy;
-import org.springframework.jdbc.core.simple.JdbcClient;
+import cs509.backend.Data.Flight;
+import cs509.backend.Data.FlightForm;
+import cs509.backend.Repository.FlightRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
 
 @Service
+@AllArgsConstructor
 public class FlightService {
-    private final JdbcClient jdbcClient;
+
+    private final FlightRepository flightRepository;
 
     // must be matching field names with named parameters for jdbc
-    private record FlightInfo(String departAirport, String arriveAirport,
+    public record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd,
                              int start, int count, int minConnTime, int maxConnTime, String sort, String orderBy) {}
 
-    public FlightService(DataSource dataSource) {
-        this.jdbcClient = JdbcClient.create(dataSource);
-    }
-
     public HashMap<String, List<Flight[]>> findFlightBy(FlightForm flightForm, int page, int count) {
+        // recheck just in case depart airport or arrive airport is not given.
         if (flightForm.getDepartAirport().isEmpty() || flightForm.getArriveAirport().isEmpty())
             return null;
 
@@ -45,6 +45,26 @@ public class FlightService {
         return flightDetails;
     }
 
+    public List<Flight[]> findOneWayFlights(String numberOfConnection, FlightInfo flightInfo) {
+        List<Flight[]> flightList = new ArrayList<>();
+        switch (numberOfConnection) {
+            case "2":
+                Flight[] two = flightRepository.findFlightWithTwoConnection(flightInfo);
+                for (Flight t : two)
+                    flightList.add(t.getFlights());
+            case "1":
+                Flight[] one = flightRepository.findFlightWithOneConnection(flightInfo);
+                for (Flight t : one)
+                    flightList.add(t.getFlights());
+            case "0":
+                Flight[] no = flightRepository.findFlightWithNoConnection(flightInfo);
+                for (Flight t : no)
+                    flightList.add(t.getFlights());
+            default:
+                return flightList;
+        }
+    }
+
     private LocalDateTime checkWindowTime(LocalTime windowTime, LocalDate baseDate, LocalTime defaultTime) {
         if (baseDate == null)
             return null;
@@ -60,149 +80,11 @@ public class FlightService {
                 start, count, minConnTime, maxConnTime, flightForm.getSort().toString(), flightForm.getOrder().toString());
     }
 
-    private List<Flight[]> findOneWayFlights(String numberOfConnection, FlightInfo flightInfo) {
-        List<Flight[]> flightList = new ArrayList<>();
-        switch (numberOfConnection) {
-            case "2":
-                Flight[] two = findFlightWithTwoConnection(flightInfo);
-                for (Flight t : two)
-                    flightList.add(t.getFlights());
-            case "1":
-                Flight[] one = findFlightWithOneConnection(flightInfo);
-                for (Flight t : one)
-                    flightList.add(t.getFlights());
-            case "0":
-                Flight[] no = findFlightWithNoConnection(flightInfo);
-                for (Flight t : no)
-                    flightList.add(t.getFlights());
-            default:
-                return flightList;
-        }
-    }
-
-    private Flight[] findFlightWithNoConnection(FlightInfo flightInfo) {
-        String sql =
-                "WITH CombinedFlights AS (SELECT * FROM deltas UNION SELECT * FROM southwests) " +
-                "SELECT " +
-                    "DepartAirport AS StartAirport, " +
-                    "ArriveAirport AS FinalAirport, " +
-                    "DepartDateTime AS StartDepartDateTime, " +
-                    "ArriveDateTime AS FinalArriveDateTime, " +
-                    "FlightNumber AS FlightNumber1 " +
-                "FROM CombinedFlights " +
-                "WHERE DepartAirport = :departAirport " +
-                    "AND ArriveAirport = :arriveAirport " +
-                    "AND (:departDateTimeStart IS NULL OR DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
-                "ORDER BY " +
-                    "CASE " +
-                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
-                        "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
-                "LIMIT :start, :count";
-
-        return jdbcClient.sql(sql)
-                .paramSource(flightInfo)
-                .query(Flight.class)
-                .list().toArray(new Flight[0]);
-    }
-
-    private FlightOneConnection[] findFlightWithOneConnection(FlightInfo flightInfo) {
-        String sql =
-                "WITH CombinedFlights AS (SELECT * FROM deltas UNION SELECT * FROM southwests) " +
-                "SELECT " +
-                    "A.DepartAirport AS StartAirport, " +
-                    "A.ArriveAirport AS Connection1, " +
-                    "B.ArriveAirport AS FinalAirport, " +
-                    "A.DepartDateTime AS StartDepartDateTime, " +
-                    "A.ArriveDateTime AS Leg1ArriveDateTime, " +
-                    "B.DepartDateTime AS Leg2DepartDateTime, " +
-                    "B.ArriveDateTime AS FinalArriveDateTime, " +
-                    "A.FlightNumber AS FlightNumber1, " +
-                    "B.FlightNumber AS FlightNumber2 " +
-                "FROM " +
-                    "CombinedFlights A " +
-                    "JOIN " +
-                        "CombinedFlights B ON A.ArriveAirport = B.DepartAirport " +
-                "WHERE " +
-                    "A.DepartAirport = :departAirport " +
-                    "AND B.ArriveAirport = :arriveAirport " +
-                    "AND B.DepartDateTime >= A.ArriveDateTime " +
-                    "AND ABS(TIMESTAMPDIFF(MINUTE, A.ArriveDateTime, B.DepartDateTime)) BETWEEN :minConnTime AND :maxConnTime " +
-                    "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
-                "ORDER BY " +
-                    "CASE " +
-                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
-                        "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
-                "LIMIT :start, :count";
-
-        return jdbcClient.sql(sql)
-                .paramSource(flightInfo)
-                .query(FlightOneConnection.class)
-                .list().toArray(new FlightOneConnection[0]);
-    }
-
-    private FlightTwoConnection[] findFlightWithTwoConnection(FlightInfo flightInfo) {
-        String sql =
-                "WITH CombinedFlights AS ( SELECT * from deltas UNION SELECT * from southwests) " +
-                "SELECT " +
-                    "A.DepartAirport AS StartAirport, " +
-                    "A.ArriveAirport AS Connection1, " +
-                    "B.ArriveAirport AS Connection2, " +
-                    "C.ArriveAirport AS FinalAirport, " +
-                    "A.DepartDateTime AS StartDepartDateTime, " +
-                    "A.ArriveDateTime AS Leg1ArriveDateTime, " +
-                    "B.DepartDateTime AS Leg2DepartDateTime, " +
-                    "B.ArriveDateTime AS Leg2ArriveDateTime, " +
-                    "C.DepartDateTime AS Leg3DepartDateTime, " +
-                    "C.ArriveDateTime AS FinalArriveDateTime, " +
-                    "A.FlightNumber AS FlightNumber1, " +
-                    "B.FlightNumber AS FlightNumber2, " +
-                    "C.FlightNumber AS FlightNumber3 " +
-                "FROM CombinedFlights AS A " +
-                    "JOIN " +
-                        "CombinedFlights AS B ON A.ArriveAirport = B.DepartAirport " +
-                    "JOIN " +
-                        "CombinedFlights AS C ON B.ArriveAirport = C.DepartAirport " +
-                "WHERE " +
-                    "A.DepartAirport = :departAirport " +
-                    "AND C.ArriveAirport = :arriveAirport " +
-                    "AND A.DepartAirport != C.DepartAirport " +
-                    "AND A.ArriveAirport != C.ArriveAirport " +
-                    "AND B.DepartDateTime > A.ArriveDateTime " +
-                    "AND C.DepartDateTime > B.ArriveDateTime " +
-                    "AND ABS(TIMESTAMPDIFF(MINUTE, A.ArriveDateTime, B.DepartDateTime)) BETWEEN :minConnTime AND :maxConnTime " +
-                    "AND ABS(TIMESTAMPDIFF(MINUTE, B.ArriveDateTime, C.DepartDateTime)) BETWEEN :minConnTime AND :maxConnTime " +
-                    "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
-                "ORDER BY " +
-                    "CASE " +
-                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
-                        "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
-                "LIMIT :start, :count";
-
-        return jdbcClient.sql(sql)
-                .paramSource(flightInfo)
-                .query(FlightTwoConnection.class)
-                .list().toArray(new FlightTwoConnection[0]);
-    }
-
     public String[] getAllDepartAirports() {
-        String sql = "SELECT DISTINCT(DepartAirport) FROM deltas " +
-                    "UNION " +
-                    "SELECT DISTINCT(DepartAirport) FROM southwests " +
-                    "ORDER BY DepartAirport";
-        return jdbcClient.sql(sql).query(String.class).list().toArray(new String[0]);
+        return flightRepository.getAllDepartAirports();
     }
 
     public String[] getAllArriveAirports() {
-        String sql = "SELECT DISTINCT(ArriveAirport) FROM deltas " +
-                    "UNION " +
-                    "SELECT DISTINCT(ArriveAirport) FROM southwests " +
-                    "ORDER BY ArriveAirport";
-        return jdbcClient.sql(sql).query(String.class).list().toArray(new String[0]);
+        return flightRepository.getAllArriveAirports();
     }
 }

@@ -2,20 +2,17 @@ package cs509.backend.Data;
 
 import cs509.backend.Enum.OrderBy;
 import cs509.backend.Enum.SortBy;
-import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class FlightForm {
+public class FlightForm implements Form {
 
     //DTO class to map form submit from frontend to backend - name, case, and type are important here
 
@@ -43,6 +40,26 @@ public class FlightForm {
 
     public OrderBy getOrder() {
         return (order.equals("asc")) ? OrderBy.ASC : OrderBy.DESC;
+    }
+
+    @Override
+    public String checkAllFields() {
+        if (departAirport.isEmpty() || arriveAirport.isEmpty())
+            return "Depart Airport or Arrive Airport empty";
+        if (departTimeStart != null && departTimeEnd != null && departTimeStart.isAfter(departTimeEnd))
+            return "Depart Time Start is after Depart Time End";
+        if (!connectionNum.isEmpty() && connectionNum.matches("\\d+")) {
+            int temp = Integer.parseInt(connectionNum);
+            if (temp > 2 || temp < 0)
+                return "Unexpected value for connection number";
+        }
+        else
+            return "Unexpected value number of connection";
+        if (!sort.equals("depart") && !sort.equals("arrive") && !sort.equals("travelTime"))
+            return "Unexpected value for field sort";
+        if (!order.equals("asc") && !order.equals("desc"))
+            return "Unexpected value for field order";
+        return null;
     }
 
 }

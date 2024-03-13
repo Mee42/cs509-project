@@ -1091,12 +1091,12 @@ tests|schema||chinh||UPDATE|G</Grants>
     <schema id="291" parent="1" name="sys">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="292" parent="1" name="b&apos;tests&apos;">
+    <schema id="292" parent="1" name="flights">
+      <Current>1</Current>
+      <LastIntrospectionLocalTimestamp>2024-03-11.04:32:04</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="293" parent="1" name="flights">
-      <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-02-24.01:32:09</LastIntrospectionLocalTimestamp>
+    <schema id="293" parent="1" name="atm">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <user id="294" parent="1" name="chinh">
@@ -1124,92 +1124,122 @@ tests|schema||chinh||UPDATE|G</Grants>
       <Host>localhost</Host>
       <Plugin>caching_sha2_password</Plugin>
     </user>
-    <table id="300" parent="293" name="deltas">
+    <table id="300" parent="292" name="ReservedFlight">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="301" parent="293" name="southwests">
+    <table id="301" parent="292" name="deltas">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <column id="302" parent="300" name="Id">
-      <AutoIncrement>15974</AutoIncrement>
+    <table id="302" parent="292" name="southwests">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <column id="303" parent="300" name="Id">
+      <AutoIncrement>1</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="303" parent="300" name="DepartDateTime">
-      <DasType>datetime|0s</DasType>
+    <column id="304" parent="300" name="FlightIds">
+      <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="304" parent="300" name="ArriveDateTime">
-      <DasType>datetime|0s</DasType>
+    <column id="305" parent="300" name="ClientName">
+      <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="305" parent="300" name="DepartAirport">
-      <DasType>varchar(255)|0s</DasType>
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-    </column>
-    <column id="306" parent="300" name="ArriveAirport">
-      <DasType>varchar(255)|0s</DasType>
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-    </column>
-    <column id="307" parent="300" name="FlightNumber">
-      <DasType>varchar(255)|0s</DasType>
-      <NotNull>1</NotNull>
-      <Position>6</Position>
-    </column>
-    <index id="308" parent="300" name="PRIMARY">
+    <index id="306" parent="300" name="PRIMARY">
       <ColNames>Id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="309" parent="300" name="PRIMARY">
+    <key id="307" parent="300" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="310" parent="301" name="Id">
-      <AutoIncrement>30914</AutoIncrement>
+    <column id="308" parent="301" name="Id">
+      <AutoIncrement>15975</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="311" parent="301" name="DepartDateTime">
+    <column id="309" parent="301" name="DepartDateTime">
       <DasType>datetime|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="312" parent="301" name="ArriveDateTime">
+    <column id="310" parent="301" name="ArriveDateTime">
       <DasType>datetime|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="313" parent="301" name="DepartAirport">
+    <column id="311" parent="301" name="DepartAirport">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="314" parent="301" name="ArriveAirport">
+    <column id="312" parent="301" name="ArriveAirport">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="315" parent="301" name="FlightNumber">
+    <column id="313" parent="301" name="FlightNumber">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <index id="316" parent="301" name="PRIMARY">
+    <index id="314" parent="301" name="PRIMARY">
       <ColNames>Id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="317" parent="301" name="PRIMARY">
+    <key id="315" parent="301" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="316" parent="302" name="Id">
+      <AutoIncrement>30915</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="317" parent="302" name="DepartDateTime">
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="318" parent="302" name="ArriveDateTime">
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="319" parent="302" name="DepartAirport">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="320" parent="302" name="ArriveAirport">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="321" parent="302" name="FlightNumber">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <index id="322" parent="302" name="PRIMARY">
+      <ColNames>Id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="323" parent="302" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

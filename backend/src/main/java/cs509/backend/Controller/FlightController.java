@@ -1,38 +1,22 @@
 package cs509.backend.Controller;
 
-import cs509.backend.Data.Flight;
 import cs509.backend.Data.FlightForm;
+import cs509.backend.Data.FlightReserveForm;
+import cs509.backend.Service.FlightReserveService;
 import cs509.backend.Service.FlightService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/flights")
 @CrossOrigin
+@AllArgsConstructor
 public class FlightController {
 
     private final FlightService flightService;
-
-    public FlightController(FlightService flightService) {
-        this.flightService = flightService;
-    }
-
-    @GetMapping("/{page}") // IGNORE - just for manual testing
-    public HashMap<String, List<Flight[]>> getManualTest(@PathVariable("page") int page) {
-        String dA = "Atlanta (ATL)";
-        String aA = "Tucson (TUS)";
-        LocalDate dD = LocalDate.parse("2023-01-01");
-        LocalTime dStart = null;
-        LocalTime dEnd = null;
-        String connectionNumber = "1";
-        FlightForm t = new FlightForm(dA, aA, dD, false, connectionNumber,
-                dStart, dEnd, "depart", "desc");
-
-        return flightService.findFlightBy(t, page, 10);
-    }
+    private final FlightReserveService flightReserveService;
 
     @GetMapping("/departAirport")
     public String[] getAllDepartAirports() {
@@ -45,8 +29,22 @@ public class FlightController {
     }
 
     @PostMapping("/submitForm/{page}")
-    public HashMap<String, List<Flight[]>> submitForm(@RequestBody FlightForm flightForm,
-                                                                 @PathVariable("page") int page) {
-        return flightService.findFlightBy(flightForm, page, 10);
+    public ResponseEntity<?> submitForm(@RequestBody FlightForm flightForm, @PathVariable("page") int page) {
+        String msg = flightForm.checkAllFields();
+        if (msg == null)
+            return ResponseEntity.ok(flightService.findFlightBy(flightForm, page, 10));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error message: " + msg);
+    }
+
+    @PostMapping("/reserveFlight")
+    public ResponseEntity<?> reserveFlight(@RequestBody FlightReserveForm flightReserveForm) {
+        String msg = flightReserveForm.checkAllFields();
+        if (msg == null) {
+            String msg2 = flightReserveService.reserveFlight(flightReserveForm);
+            if (msg2 == null)
+                return ResponseEntity.ok("ok");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error message: " + msg2);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error message: " + msg);
     }
 }

@@ -2,6 +2,6 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/22faae5e-02ec-4591-9dee-fec7dd9696ca/console.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/backend/src/main/java/cs509/backend/Service/FlightService.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/backend/src/main/java/cs509/backend/Repository/FlightRepository.java" dialect="MySQL" />
   </component>
 </project>

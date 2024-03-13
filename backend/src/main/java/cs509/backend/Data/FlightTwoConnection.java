@@ -1,7 +1,6 @@
 package cs509.backend.Data;
 
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 
 @Getter
