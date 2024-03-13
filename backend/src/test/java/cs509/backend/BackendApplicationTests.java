@@ -2,8 +2,11 @@ package cs509.backend;
 
 import cs509.backend.Data.Flight;
 import cs509.backend.Data.FlightForm;
+import cs509.backend.Enum.OrderBy;
+import cs509.backend.Enum.SortBy;
 import cs509.backend.Repository.FlightRepository;
 import cs509.backend.Service.FlightService;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -72,7 +75,7 @@ class BackendApplicationTests {
 				"Denver (DEN)",
 				LocalDateTime.now().minusYears(5),
 				LocalDateTime.now(),
-				0, 100, 0, Integer.MAX_VALUE, "depart", "asc"
+				0, 100, 0, Integer.MAX_VALUE, SortBy.Arrive, OrderBy.ASC
 		));
 		for(var flight : flights) {
 			assertThat(flight.length).isEqualTo(1);
@@ -91,7 +94,7 @@ class BackendApplicationTests {
 				"Denver (DEN)",
 				LocalDateTime.now().minusYears(5),
 				LocalDateTime.now(),
-				0, 1000, 1, 55, "depart", "asc"
+				0, 1000, 1, 55, SortBy.Arrive, OrderBy.ASC 
 		));
 		for(var flight : flights) {
 			if(flight.length == 2) {
@@ -110,7 +113,7 @@ class BackendApplicationTests {
 				"Denver (DEN)",
 				LocalDateTime.now().minusYears(5),
 				LocalDateTime.now(),
-				0, 1000, 1, 55, "depart", "asc"
+				0, 1000, 1, 55, SortBy.Depart, OrderBy.ASC
 		)).stream().map(it -> it[0]).toList();
 		Set<Integer> IDs = flights.stream().map(it -> flightRepository.getFlightId(it)).collect(Collectors.toSet());
 		assertThat(IDs.size()).isEqualTo(flights.size());
@@ -120,47 +123,31 @@ class BackendApplicationTests {
 	@Test
 	void testFlightFormValidationFunction() {
 		FlightForm a = new FlightForm("New York (JFK)", "Denver (DEN)", LocalDate.now(), false,
-				"2", LocalTime.MIN, LocalTime.MAX, "arrive", "asc");
+				"2", LocalTime.MIN, LocalTime.MAX, SortBy.Arrive, OrderBy.ASC);
 		assertThat(a.checkAllFields()).isNull();
 
 		a = new FlightForm("", "Denver (DEN)", LocalDate.now(), false,
-				"2", LocalTime.MIN, LocalTime.MAX, "arrive", "asc");
+				"2", LocalTime.MIN, LocalTime.MAX, SortBy.Arrive, OrderBy.ASC);
 		assertThat(a.checkAllFields()).isNotNull();
 
 		a = new FlightForm("New York (JFK)", "", LocalDate.now(), false,
-				"2", LocalTime.MIN, LocalTime.MAX, "arrive", "asc");
+				"2", LocalTime.MIN, LocalTime.MAX, SortBy.Arrive, OrderBy.ASC);
 		assertThat(a.checkAllFields()).isNotNull();
 
 		a = new FlightForm("New York (JFK)", "Denver (DEN)", LocalDate.now(), false,
-				"2", LocalTime.MAX, LocalTime.MIN, "arrive", "asc");
+				"2", LocalTime.MAX, LocalTime.MIN, SortBy.Arrive, OrderBy.ASC);
 		assertThat(a.checkAllFields()).isNotNull(); // reversed  time
 
-
 		a = new FlightForm("New York (JFK)", "Denver (DEN)", LocalDate.now(), false,
-				"2", LocalTime.MIN, LocalTime.MAX, "aoenstaosenthao", "asc");
-		assertThat(a.checkAllFields()).isNotNull(); // illegal sort
-
-
-
-		a = new FlightForm("New York (JFK)", "Denver (DEN)", LocalDate.now(), false,
-				"2", LocalTime.MIN, LocalTime.MAX, "arrive", "ascaoeu");
-		assertThat(a.checkAllFields()).isNotNull(); // illegal order
-
-
-		a = new FlightForm("New York (JFK)", "Denver (DEN)", LocalDate.now(), false,
-				"8", LocalTime.MIN, LocalTime.MAX, "arrive", "asc");
+				"8", LocalTime.MIN, LocalTime.MAX, SortBy.Arrive, OrderBy.ASC);
 		assertThat(a.checkAllFields()).isNotNull(); // illegal connection num
 
-
-
 		a = new FlightForm("New York (JFK)", "Denver (DEN)", LocalDate.now(), false,
-				"antoeh", LocalTime.MIN, LocalTime.MAX, "arrive", "asc");
+				"antoeh", LocalTime.MIN, LocalTime.MAX, SortBy.Arrive, OrderBy.ASC);
 		assertThat(a.checkAllFields()).isNotNull(); // connection num is a non-integer
 
-
-
 		a = new FlightForm("New York (JFK)", "Denver (DEN)", LocalDate.now(), false,
-				"", LocalTime.MIN, LocalTime.MAX, "arrive", "asc");
+				"", LocalTime.MIN, LocalTime.MAX, SortBy.Arrive, OrderBy.ASC);
 		assertThat(a.checkAllFields()).isNotNull(); // connection num blank
 	}
 }
