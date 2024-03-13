@@ -16,14 +16,10 @@ public class ReservedFlight {
     @Column(name = "Id")
     private int id;
 
-    @Column(name = "FlightIds", nullable = false)
-    private int flightIds;
+    @Column(name = "FlightId", nullable = false)
+    private int flightId;
 
-    @Column(name = "ClientName", nullable = false)
-    private String name;
-
-    public ReservedFlight(int flightIds, String name) {
-        this.flightIds = flightIds;
-        this.name = name;
+    public ReservedFlight(int flightId) {
+        this.flightId = flightId;
     }
 }

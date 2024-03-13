@@ -31,9 +31,8 @@ public class FlightForm implements Form {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime departTimeEnd;
 
-    private SortBy sort = SortBy.Arrive;// default arrive - accept (depart, arrive, travelTime)
-    private OrderBy order = OrderBy.ASC;   // default asc - accept (asc, desc)
-
+    private SortBy sort = SortBy.Arrive;   // default Arrive - accept (Depart, Arrive, TravelTime)
+    private OrderBy order = OrderBy.ASC;   // default ASC - accept (ASC, DESC)
 
     @Override
     public String checkAllFields() {

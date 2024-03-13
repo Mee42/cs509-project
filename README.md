@@ -71,16 +71,14 @@ Recommend using Intellij as it has everything out of the box for spring MVC fram
                 "arriveDateTime": "2024-03-11T23:00:00",
                 "flightNumber": "DEF456"
             }
-        ],
-        "name": "Traveler's name"
+        ]
      }
      ```
 4. If you are using Hibernate framework (come with Intellij) then no need to do anything for backend up reservation as Hibernate will create the reservation list defined. Otherwise, in your database, create a table in MySQL called ReservedFlight with columns: Id, FlightIds, ClientName:
      ```sql
         CREATE TABLE ReservedFlight (
            Id integer NOT NULL auto_increment,
-           FlightIds integer NOT NULL,
-           ClientName varchar(255) NOT NULL,
+           FlightId integer NOT NULL,
            Primary Key (Id)
         ) engine=InnoDB
      ```
