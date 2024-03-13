@@ -1,0 +1,24 @@
+.TripSelectContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.TripSelectContainer button {
+    width: 15vw;
+    margin: auto;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+    font-weight: bold;
+}
+
+.TripCardContainer {
+    margin: auto; /* centers the div */
+    width: 60vw;  /* shrinks child card size horizontally */
+    display: flex;
+    flex-direction: column;  /* aligns child cards veritcally */
+    gap: 2vh;  /* spacing between cards */
+}
+
+.SelectedTrips .TripCard {
+    outline: 3px solid black;
+}

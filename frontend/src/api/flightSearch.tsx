@@ -4,6 +4,7 @@ import {
   flightSearchEndpoint,
 } from "../definitions";
 import axios from "axios";
+import { FlightSearchQuery } from "../model/flightSearchQuery";
 
 async function getAirports(
   setAirportList: CallableFunction,
@@ -30,17 +31,16 @@ export function getArrivalAirports(setArrivalAirportList: CallableFunction) {
 }
 
 export async function getTrips(
-  departAirport: string,
-  arriveAirport: string,
-  departDate: string,
+  searchQuery: FlightSearchQuery,
+  batchNum: number,
   setTrips: CallableFunction
 ) {
   await axios
-    .post(flightSearchEndpoint + "/3", {
-      departAirport: departAirport,
-      arriveAirport: arriveAirport,
-      departDate: departDate,
-      connectionNum: "2",
+    .post(flightSearchEndpoint + "/" + batchNum, {
+      departAirport: searchQuery.departAirport,
+      arriveAirport: searchQuery.arriveAirport,
+      departDate: searchQuery.date,
+      connectionNum: searchQuery.connectionNum,
     })
     .then((response) => {
       const trips = response.data["outbound"];
