@@ -2,6 +2,8 @@ package cs509.backend.Service;
 
 import cs509.backend.Data.Flight;
 import cs509.backend.Data.FlightForm;
+import cs509.backend.Enum.OrderBy;
+import cs509.backend.Enum.SortBy;
 import cs509.backend.Repository.FlightRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class FlightService {
     // must be matching field names with named parameters for jdbc
     public record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd,
-                             int start, int count, int minConnTime, int maxConnTime, String sort, String orderBy) {}
+                             int start, int count, int minConnTime, int maxConnTime, SortBy sort, OrderBy orderBy) {}
 
     public HashMap<String, List<Flight[]>> findFlightBy(FlightForm flightForm, int page, int count) {
         // recheck just in case depart airport or arrive airport is not given.
@@ -77,7 +79,7 @@ public class FlightService {
         LocalDateTime departEndWindow = checkWindowTime(flightForm.getDepartTimeEnd(), departDate, LocalTime.parse("23:59:00"));
 
         return new FlightInfo(flightForm.getDepartAirport(), flightForm.getArriveAirport(), departStartWindow, departEndWindow,
-                start, count, minConnTime, maxConnTime, flightForm.getSort().toString(), flightForm.getOrder().toString());
+                start, count, minConnTime, maxConnTime, flightForm.getSort(), flightForm.getOrder());
     }
 
     public String[] getAllDepartAirports() {

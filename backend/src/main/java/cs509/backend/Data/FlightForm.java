@@ -31,34 +31,25 @@ public class FlightForm implements Form {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime departTimeEnd;
 
-    private String sort = "arrive"; // default arrive - accept (depart, arrive, travelTime)
-    private String order = "asc";   // default asc - accept (asc, desc)
+    private SortBy sort = SortBy.Arrive;// default arrive - accept (depart, arrive, travelTime)
+    private OrderBy order = OrderBy.ASC;   // default asc - accept (asc, desc)
 
-    public SortBy getSort() {
-        return (sort.equals("depart")) ? SortBy.Depart : (sort.equals("travelTime")) ? SortBy.TravelTime : SortBy.Arrive;
-    }
-
-    public OrderBy getOrder() {
-        return (order.equals("asc")) ? OrderBy.ASC : OrderBy.DESC;
-    }
 
     @Override
     public String checkAllFields() {
-        if (departAirport.isEmpty() || arriveAirport.isEmpty())
+        if (departAirport.isEmpty() || arriveAirport.isEmpty()) {
             return "Depart Airport or Arrive Airport empty";
-        if (departTimeStart != null && departTimeEnd != null && departTimeStart.isAfter(departTimeEnd))
+        }
+        if (departTimeStart != null && departTimeEnd != null && departTimeStart.isAfter(departTimeEnd)) {
             return "Depart Time Start is after Depart Time End";
-        if (!connectionNum.isEmpty() && connectionNum.matches("\\d+")) {
+        }
+        try {
             int temp = Integer.parseInt(connectionNum);
             if (temp > 2 || temp < 0)
                 return "Unexpected value for connection number";
+        } catch(NumberFormatException e) {
+            return "Unexpected value for connection number";
         }
-        else
-            return "Unexpected value number of connection";
-        if (!sort.equals("depart") && !sort.equals("arrive") && !sort.equals("travelTime"))
-            return "Unexpected value for field sort";
-        if (!order.equals("asc") && !order.equals("desc"))
-            return "Unexpected value for field order";
         return null;
     }
 

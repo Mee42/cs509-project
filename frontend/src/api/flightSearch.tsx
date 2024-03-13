@@ -41,6 +41,8 @@ export async function getTrips(
       arriveAirport: searchQuery.arriveAirport,
       departDate: searchQuery.date,
       connectionNum: searchQuery.connectionNum,
+      sort: "Arrive",
+      order: "ASC",
     })
     .then((response) => {
       const trips = response.data["outbound"];
