@@ -74,7 +74,7 @@ Recommend using Intellij as it has everything out of the box for spring MVC fram
         ]
      }
      ```
-4. If you are using Hibernate framework (come with Intellij) then no need to do anything for backend up reservation as Hibernate will create the reservation list defined. Otherwise, in your database, create a table in MySQL called ReservedFlight with columns: Id, FlightIds, ClientName:
+4. If you are using Hibernate framework (come with Intellij) then no need to do anything for backend up reservation as Hibernate will create the reservation list defined. Otherwise, in your database, create a table in MySQL called ReservedFlight with columns: Id, FlightId:
      ```sql
         CREATE TABLE ReservedFlight (
            Id integer NOT NULL auto_increment,
