@@ -40,7 +40,7 @@ public class FlightRepository {
                 .list().toArray(new Flight[0]);
     }
 
-    public FlightOneConnection[] findFlightWithOneConnection(FlightService.FlightInfo flightInfo) {
+    public Flight[] findFlightWithOneConnection(FlightService.FlightInfo flightInfo) {
         String sql = "WITH CombinedFlights AS (SELECT * FROM deltas UNION SELECT * FROM southwests) " +
                 "SELECT " +
                     "A.DepartAirport AS StartAirport, " +
@@ -74,7 +74,7 @@ public class FlightRepository {
                 .list().toArray(new FlightOneConnection[0]);
     }
 
-    public FlightTwoConnection[] findFlightWithTwoConnection(FlightService.FlightInfo flightInfo) {
+    public Flight[] findFlightWithTwoConnection(FlightService.FlightInfo flightInfo) {
         String sql = "WITH CombinedFlights AS (SELECT * from deltas UNION SELECT * from southwests) " +
                 "SELECT " +
                     "A.DepartAirport AS StartAirport, " +
