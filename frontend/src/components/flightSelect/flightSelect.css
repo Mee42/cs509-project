@@ -1,22 +1,42 @@
-.TripSelectContainer {
+.FlightSelectContainer {
+    margin: auto;
+    width: 50%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 2vh
 }
 
-.TripSelectContainer button {
-    width: 15vw;
-    margin: auto;
-    margin-top: 1vh;
-    margin-bottom: 2vh;
-    font-weight: bold;
+.TripSelectContainer {
+    width: 100%;
 }
 
 .TripCardContainer {
-    margin: auto; /* centers the div */
-    width: 60vw;  /* shrinks child card size horizontally */
+    width: 100%;
+}
+
+.FlightSelectContainer button {
+    width: 20vw;
+    font-weight: bold;
+}
+
+.TripSelectContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1vh;
+}
+
+.TripCardContainer {
     display: flex;
     flex-direction: column;  /* aligns child cards veritcally */
     gap: 2vh;  /* spacing between cards */
+}
+
+.TripsToSelect .TripCard:hover, .FlightSelectFilterButton:hover {
+    outline: 1px solid black;
+    background-color: lightcoral;
+    cursor: pointer;
 }
 
 .SelectedTrips .TripCard {

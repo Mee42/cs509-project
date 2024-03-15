@@ -8,12 +8,6 @@
     height: 20vh;
 }
 
-.TripCard:hover {
-    outline: 1px solid black;
-    background-color: lightcoral;
-    cursor: pointer;
-}
-
 .TripCardDetails {
     padding: 2vh;  /* space between child elements and border */
     display: flex;
