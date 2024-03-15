@@ -33,7 +33,8 @@ export function getArrivalAirports(setArrivalAirportList: CallableFunction) {
 export async function getTrips(
   searchQuery: FlightSearchQuery,
   batchNum: number,
-  setTrips: CallableFunction
+  setTrips: CallableFunction,
+  sortMethod: string
 ) {
   await axios
     .post(flightSearchEndpoint + "/" + batchNum, {
@@ -41,7 +42,7 @@ export async function getTrips(
       arriveAirport: searchQuery.arriveAirport,
       departDate: searchQuery.date,
       connectionNum: searchQuery.connectionNum,
-      sort: "Arrive",
+      sort: sortMethod,
       order: "ASC",
     })
     .then((response) => {

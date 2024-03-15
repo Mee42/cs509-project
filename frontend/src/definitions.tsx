@@ -4,3 +4,5 @@ export const arrivalAirportsEndpoint =
 export const departureAirportsEndpoint =
   backendURI + "/api/flights/departAirport";
 export const flightSearchEndpoint = backendURI + "/api/flights/submitForm";
+export const submitReservationEndpoint =
+  backendURI + "/api/flights/reserveFlight";
