@@ -116,9 +116,9 @@ export function FlightSelect({ searchQueries }: Props) {
 
   function handleReservationClick() {
     console.log("reservation clicked");
-    // selectedTrips.map((trip) => {
-    //   submitReservation(trip);
-    // });
+    selectedTrips.map((trip) => {
+      submitReservation(trip);
+    });
   }
 
   return (
