@@ -79,6 +79,7 @@ Recommend using Intellij as it has everything out of the box for spring MVC fram
         CREATE TABLE ReservedFlight (
            Id integer NOT NULL auto_increment,
            FlightId integer NOT NULL,
+           FlightTable varchar(255) NOT NULL,
            Primary Key (Id)
         ) engine=InnoDB
      ```

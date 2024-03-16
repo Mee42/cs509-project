@@ -117,15 +117,30 @@ public class FlightRepository {
                 .list().toArray(new FlightTwoConnection[0]);
     }
 
-    public Integer getFlightId(Flight flight) {
-        String sql = "WITH CombinedFlights AS (SELECT * from deltas UNION SELECT * from southwests) " +
+    public Integer getFlightIdFromDeltas(Flight flight) {
+        String sql =
                 "SELECT Id " +
-                "FROM CombinedFlights " +
+                "FROM deltas " +
                 "WHERE DepartAirport = :startAirport " +
                     "AND ArriveAirport = :finalAirport " +
                     "AND DepartDateTime = :startDepartDateTime " +
                     "AND ArriveDateTime = :finalArriveDateTime " +
                     "AND FlightNumber = :flightNumber1";
+        return jdbcClient.sql(sql)
+                .paramSource(flight)
+                .query(Integer.class)
+                .stream().findAny().orElse(null);
+    }
+
+    public Integer getFlightIdFromSouthwests(Flight flight) {
+        String sql =
+                "SELECT Id " +
+                "FROM southwests " +
+                "WHERE DepartAirport = :startAirport " +
+                "AND ArriveAirport = :finalAirport " +
+                "AND DepartDateTime = :startDepartDateTime " +
+                "AND ArriveDateTime = :finalArriveDateTime " +
+                "AND FlightNumber = :flightNumber1";
         return jdbcClient.sql(sql)
                 .paramSource(flight)
                 .query(Integer.class)

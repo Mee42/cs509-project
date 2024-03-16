@@ -21,22 +21,24 @@ public class FlightReserveService {
 
     @Transactional
     public String reserveFlight(FlightReserveForm flightReserveForm) {
-        List<Integer> flightIds = new ArrayList<>();
+        List<ReservedFlight> flights = new ArrayList<>();
         for (Flight f : flightReserveForm.flights()) {
-            int id = getFlightId(f);
-            if (id == -1)
+            ReservedFlight r = getFlightId(f);
+            if (r == null)
                 return "Unknown flight: " + f;
-            flightIds.add(id);
+            flights.add(r);
         }
-        for (Integer id : flightIds)
-            flightReserveRepository.save(new ReservedFlight(id));
+        flightReserveRepository.saveAll(flights);
         return null;
     }
 
-    private int getFlightId(Flight flight) {
-        Integer id = flightRepository.getFlightId(flight);
-        if (id != null)
-            return id;
-        return -1;
+    private ReservedFlight getFlightId(Flight flight) {
+        Integer deltas_id = flightRepository.getFlightIdFromDeltas(flight);
+        if (deltas_id != null)
+            return new ReservedFlight(deltas_id, "deltas");
+        Integer southwests_id = flightRepository.getFlightIdFromSouthwests(flight);
+        if (southwests_id != null)
+            return new ReservedFlight(southwests_id, "southwests");
+        return null;
     }
 }

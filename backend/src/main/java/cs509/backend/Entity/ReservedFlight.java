@@ -19,7 +19,11 @@ public class ReservedFlight {
     @Column(name = "FlightId", nullable = false)
     private int flightId;
 
-    public ReservedFlight(int flightId) {
+    @Column(name = "FlightTable", nullable = false)
+    private String flightTable;
+
+    public ReservedFlight(int flightId, String flightTable) {
         this.flightId = flightId;
+        this.flightTable = flightTable;
     }
 }
