@@ -23,7 +23,7 @@ public class FlightService {
     // must be matching field names with named parameters for jdbc
     public record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd,
-                             int start, int count, int minConnTime, int maxConnTime, SortBy sort, OrderBy orderBy) {}
+                             int start, int count, int minConnTime, int maxConnTime, String sort, String orderBy) {}
 
     public HashMap<String, List<Flight[]>> findFlightBy(FlightForm flightForm, int page, int count) {
         // recheck just in case depart airport or arrive airport is not given.
@@ -79,7 +79,7 @@ public class FlightService {
         LocalDateTime departEndWindow = checkWindowTime(flightForm.getDepartTimeEnd(), departDate, LocalTime.parse("23:59:00"));
 
         return new FlightInfo(flightForm.getDepartAirport(), flightForm.getArriveAirport(), departStartWindow, departEndWindow,
-                start, count, minConnTime, maxConnTime, flightForm.getSort(), flightForm.getOrder());
+                start, count, minConnTime, maxConnTime, flightForm.getSort().toString(), flightForm.getOrder().toString());
     }
 
     public String[] getAllDepartAirports() {
