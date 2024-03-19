@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Getter
@@ -31,4 +32,10 @@ public class Flight {
                 new Flight(startAirport, finalAirport, startDepartDateTime, finalArriveDateTime, flightNumber1)
         };
     }
+
+    @JsonIgnore
+    public Duration getFlightDuration() {
+        return Duration.between(startDepartDateTime, finalArriveDateTime);
+    }
+
 }

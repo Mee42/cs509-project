@@ -7,12 +7,11 @@ import cs509.backend.Enum.SortBy;
 import cs509.backend.Repository.FlightRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -23,7 +22,7 @@ public class FlightService {
     // must be matching field names with named parameters for jdbc
     public record FlightInfo(String departAirport, String arriveAirport,
                              LocalDateTime departDateTimeStart, LocalDateTime departDateTimeEnd,
-                             int start, int count, int minConnTime, int maxConnTime, String sort, String orderBy) {}
+                             int start, int count, int minConnTime, int maxConnTime, String sortBy, String orderBy) {}
 
     public HashMap<String, List<Flight[]>> findFlightBy(FlightForm flightForm, int page, int count) {
         // recheck just in case depart airport or arrive airport is not given.
@@ -51,20 +50,40 @@ public class FlightService {
         List<Flight[]> flightList = new ArrayList<>();
         switch (numberOfConnection) {
             case "2":
-                Flight[] two = flightRepository.findFlightWithTwoConnection(flightInfo);
-                for (Flight t : two)
-                    flightList.add(t.getFlights());
+                flightList.add(flightRepository.findFlightWithTwoConnection(flightInfo));
             case "1":
-                Flight[] one = flightRepository.findFlightWithOneConnection(flightInfo);
-                for (Flight t : one)
-                    flightList.add(t.getFlights());
+                flightList.add(flightRepository.findFlightWithOneConnection(flightInfo));
             case "0":
-                Flight[] no = flightRepository.findFlightWithNoConnection(flightInfo);
-                for (Flight t : no)
-                    flightList.add(t.getFlights());
+                flightList.add(flightRepository.findFlightWithNoConnection(flightInfo));
+                break;
             default:
-                return flightList;
+                return null;
         }
+
+        Flight[] combinedFlightArray = flightList.stream()
+                .flatMap(Arrays::stream)
+                .toArray(Flight[]::new);
+
+        if (flightInfo.sortBy.equals(SortBy.Depart.toString())) {
+            if (flightInfo.orderBy.equals(OrderBy.DESC.toString()))
+                Arrays.sort(combinedFlightArray, Comparator.comparing(Flight::getStartDepartDateTime).reversed());
+            Arrays.sort(combinedFlightArray, Comparator.comparing(Flight::getStartDepartDateTime));
+        }
+        else if (flightInfo.sortBy.equals(SortBy.Arrive.toString())) {
+            if (flightInfo.orderBy.equals(OrderBy.DESC.toString()))
+                Arrays.sort(combinedFlightArray, Comparator.comparing(Flight::getFinalArriveDateTime).reversed());
+            Arrays.sort(combinedFlightArray, Comparator.comparing(Flight::getFinalArriveDateTime));
+        }
+        else if (flightInfo.sortBy.equals(SortBy.TravelTime.toString())) {
+            if (flightInfo.orderBy.equals(OrderBy.DESC.toString()))
+                Arrays.sort(combinedFlightArray, Comparator.comparing(Flight::getFlightDuration).reversed());
+            Arrays.sort(combinedFlightArray, Comparator.comparing(Flight::getFlightDuration));
+        }
+
+        List<Flight[]> flights = new ArrayList<>();
+        for (Flight t : combinedFlightArray)
+            flights.add(t.getFlights());
+        return flights;
     }
 
     private LocalDateTime checkWindowTime(LocalTime windowTime, LocalDate baseDate, LocalTime defaultTime) {

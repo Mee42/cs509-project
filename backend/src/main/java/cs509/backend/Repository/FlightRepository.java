@@ -28,8 +28,8 @@ public class FlightRepository {
                     "AND (:departDateTimeStart IS NULL OR DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
                     "CASE " +
-                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "WHEN (:sortBy = 'Depart') THEN StartDepartDateTime " +
+                        "WHEN (:sortBy = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
                     "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
@@ -62,8 +62,8 @@ public class FlightRepository {
                     "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
                     "CASE " +
-                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "WHEN (:sortBy = 'Depart') THEN StartDepartDateTime " +
+                        "WHEN (:sortBy = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
                     "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
@@ -105,8 +105,8 @@ public class FlightRepository {
                     "AND (:departDateTimeStart IS NULL OR A.DepartDateTime BETWEEN :departDateTimeStart AND :departDateTimeEnd) " +
                 "ORDER BY " +
                     "CASE " +
-                        "WHEN (:sort = 'Depart') THEN StartDepartDateTime " +
-                        "WHEN (:sort = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
+                        "WHEN (:sortBy = 'Depart') THEN StartDepartDateTime " +
+                        "WHEN (:sortBy = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
                     "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
                 "LIMIT :start, :count";
