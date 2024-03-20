@@ -1,4 +1,4 @@
-import { Flight } from "../../model/flight";
+import { Flight } from "../model/flight";
 import moment from "moment";
 
 export function getFlightImageURI() {

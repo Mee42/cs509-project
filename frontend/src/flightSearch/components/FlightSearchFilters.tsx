@@ -1,9 +1,9 @@
 import "./FlightSearchFilters.css";
-import AirportSearchFilter from "../AirportSearchFilter/AirportSearchFilter";
-import FlightDateSelect from "../FlightDateSelect/FlightDateSelect";
+import AirportSearchFilter from "./AirportSearchFilter";
+import FlightDateSelect from "./FlightDateSelect";
 import { useEffect, useState } from "react";
-import * as flightSearchAPI from "../../../api/flightSearch";
-import { FlightSearchQuery } from "../../../model/flightSearchQuery";
+import * as flightSearchAPI from "../flightSearch";
+import { FlightSearchQuery } from "../../model/flightSearchQuery";
 
 interface Props {
   setSearchQueries: CallableFunction;

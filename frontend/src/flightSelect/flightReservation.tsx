@@ -1,5 +1,5 @@
 import axios from "axios";
-import { submitReservationEndpoint } from "../definitions";
+import { submitReservationEndpoint } from "../endpoints";
 import { Flight } from "../model/flight";
 
 export async function submitReservation(trip: Flight[]) {

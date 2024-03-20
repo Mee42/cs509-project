@@ -1,6 +1,6 @@
 import "./TripCard.css";
 import { Flight } from "../../model/flight";
-import * as helper from "./TripCardFuncs";
+import * as helper from "../TripCardFuncs";
 
 interface Props {
   trip: Flight[];

@@ -1,9 +1,9 @@
-import FlightSearchFilters from "./components/flightSearch/FlightSearchFilters/FlightSearchFilters";
-import Navbar from "./components/general/navbar/navbar";
+import FlightSearchFilters from "./flightSearch/components/FlightSearchFilters";
+import Navbar from "./general/navbar";
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FlightSearchQuery } from "./model/flightSearchQuery";
-import { FlightSelect } from "./components/flightSelect/flightSelect";
+import { FlightSelect } from "./flightSelect/components/flightSelect";
 
 function App() {
   const [searchQueries, setSearchQueries] = useState<FlightSearchQuery[]>([]);

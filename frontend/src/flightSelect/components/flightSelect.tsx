@@ -2,11 +2,11 @@ import "./flightSelect.css";
 import { useEffect, useState } from "react";
 import { TripCard } from "./TripCard";
 import { Flight } from "../../model/flight";
-import * as flightSearchAPI from "../../api/flightSearch";
+import * as flightSearchAPI from "../../flightSearch/flightSearch";
 import { FlightSearchQuery } from "../../model/flightSearchQuery";
 import { FlightSelectFilterButtons } from "./flightSelectFilterButtons";
 import { FlightSelectFilterOption } from "../../model/flightSelectFilterOption";
-import { submitReservation } from "../../api/flightReservation";
+import { submitReservation } from "../flightReservation";
 
 interface Props {
   searchQueries: FlightSearchQuery[];

@@ -2,7 +2,7 @@ import {
   arrivalAirportsEndpoint,
   departureAirportsEndpoint,
   flightSearchEndpoint,
-} from "../definitions";
+} from "../endpoints";
 import axios from "axios";
 import { FlightSearchQuery } from "../model/flightSearchQuery";
 
