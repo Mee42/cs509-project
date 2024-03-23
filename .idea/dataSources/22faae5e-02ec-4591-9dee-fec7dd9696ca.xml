@@ -1093,7 +1093,7 @@ tests|schema||chinh||UPDATE|G</Grants>
     </schema>
     <schema id="292" parent="1" name="flights">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-03-16.00:34:58</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-03-22.00:12:03</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="293" parent="1" name="atm">
@@ -1137,7 +1137,7 @@ tests|schema||chinh||UPDATE|G</Grants>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
     <column id="303" parent="300" name="Id">
-      <AutoIncrement>3</AutoIncrement>
+      <AutoIncrement>4</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>

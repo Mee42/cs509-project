@@ -16,7 +16,6 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class FlightService {
-
     private final FlightRepository flightRepository;
 
     // must be matching field names with named parameters for jdbc
@@ -30,7 +29,7 @@ public class FlightService {
             return null;
 
         String numberOfConnection = flightForm.getConnectionNum();
-        int start = (page * count) - count + 1;
+        int start = (page * count) - count;
         final int minConnectionTime = 60; // 1h in minute
         final int maxConnectionTime = 1440; // 24h in minute
 
