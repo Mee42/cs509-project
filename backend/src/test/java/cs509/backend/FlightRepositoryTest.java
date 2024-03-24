@@ -5,6 +5,7 @@ import cs509.backend.Enum.OrderBy;
 import cs509.backend.Enum.SortBy;
 import cs509.backend.Repository.FlightRepository;
 import cs509.backend.Service.FlightService;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -22,7 +23,6 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // This test requires having docker desktop running
-@TestComponent
 @Testcontainers
 public class FlightRepositoryTest {
 
@@ -41,6 +41,14 @@ public class FlightRepositoryTest {
             .build();
 
     final FlightRepository flightRepository = new FlightRepository(JdbcClient.create(dataSource));
+
+    @AfterAll
+    public static void tearDown() {
+        // Stop the test container after all tests
+        if (mySQLContainer != null) {
+            mySQLContainer.stop();
+        }
+    }
 
     @Test
     public void testFindFlightWithNoConnection() {

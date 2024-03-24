@@ -6,8 +6,10 @@ import cs509.backend.Enum.OrderBy;
 import cs509.backend.Enum.SortBy;
 import cs509.backend.Repository.FlightRepository;
 import cs509.backend.Service.FlightService;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -26,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 // This test requires having docker desktop running
 @Testcontainers
-@TestComponent
 public class FlightServiceTest {
 
     @Container
@@ -45,6 +46,14 @@ public class FlightServiceTest {
 
     final FlightRepository flightRepository = new FlightRepository(JdbcClient.create(dataSource));
     final FlightService flightService = new FlightService(flightRepository);
+
+    @AfterAll
+    public static void tearDown() {
+        // Stop the test container after all tests
+        if (mySQLContainer != null) {
+            mySQLContainer.stop();
+        }
+    }
 
     @Test
     public void testGetAllDepartAirports() {
