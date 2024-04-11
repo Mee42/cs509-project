@@ -8,33 +8,39 @@ import { FlightSearchQuery } from "../model/flightSearchQuery";
 
 async function getAirports(
   setAirportList: CallableFunction,
-  airportsEndpoint: string
+  airportsEndpoint: string,
+  errorFunc: CallableFunction
 ) {
   await axios
-    .get(airportsEndpoint)
+    .get(airportsEndpoint, { timeout: 5000 })
     .then((response) => {
       setAirportList(response.data);
     })
-    .catch((error) => {
-      console.error(`failed to get airports: ${error}`);
+    .catch(() => {
+      errorFunc();
     });
 }
 
 export function getDepartureAirports(
-  setDepartureAirportList: CallableFunction
+  setDepartureAirportList: CallableFunction,
+  errorFunc: CallableFunction
 ) {
-  getAirports(setDepartureAirportList, departureAirportsEndpoint);
+  getAirports(setDepartureAirportList, departureAirportsEndpoint, errorFunc);
 }
 
-export function getArrivalAirports(setArrivalAirportList: CallableFunction) {
-  getAirports(setArrivalAirportList, arrivalAirportsEndpoint);
+export function getArrivalAirports(
+  setArrivalAirportList: CallableFunction,
+  errorFunc: CallableFunction
+) {
+  getAirports(setArrivalAirportList, arrivalAirportsEndpoint, errorFunc);
 }
 
 export async function getTrips(
   searchQuery: FlightSearchQuery,
   batchNum: number,
   setTrips: CallableFunction,
-  sortMethod: string
+  sortMethod: string,
+  errorFunc: CallableFunction
 ) {
   await axios
     .post(flightSearchEndpoint + "/" + batchNum, {
@@ -44,6 +50,7 @@ export async function getTrips(
       connectionNum: searchQuery.connectionNum,
       sort: sortMethod,
       order: "ASC",
+      timeout: 5000,
     })
     .then((response) => {
       const trips = response.data["outbound"];
@@ -51,6 +58,7 @@ export async function getTrips(
       setTrips(trips);
     })
     .catch((error) => {
-      console.error(`failed to get flights: ${error}`);
+      console.log(error);
+      errorFunc();
     });
 }

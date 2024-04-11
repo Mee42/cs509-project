@@ -14,17 +14,13 @@ function AirportSearchFilter({
   labelText,
   onSelectAirport,
   inputID,
-  defaultInputValue = "",
 }: Props) {
-  if (defaultInputValue.length > 0) onSelectAirport(defaultInputValue);
-
   return (
     <Select
       id={inputID}
       className="basic-single"
       classNamePrefix="select"
       placeholder={labelText}
-      defaultInputValue={defaultInputValue}
       isSearchable={true}
       name="color"
       options={airports.map((airport) => ({ value: airport, label: airport }))}

@@ -1,9 +1,11 @@
 import "./FlightSearchFilters.css";
 import AirportSearchFilter from "./AirportSearchFilter";
 import FlightDateSelect from "./FlightDateSelect";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef} from "react";
 import * as flightSearchAPI from "../flightSearch";
 import { FlightSearchQuery } from "../../model/flightSearchQuery";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   setSearchQueries: CallableFunction;
@@ -26,6 +28,8 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
   const arriveAirportSearchFilterID = "ArriveAirportSearchFilter";
   const departureDateFilterID = "DepartureDateFilter";
   const returnDateFilterID = "ReturnDateFilter";
+  const arrivalAirportsRetrieved = useRef(false);
+  const departureAirportsRetrieved = useRef(false);
 
   function packSearchQueries() {
     let searchQueries: FlightSearchQuery[] = [
@@ -83,14 +87,33 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
     }
   }
 
+  function getArrivalAirports() {
+    if (!arrivalAirportsRetrieved.current) {
+      arrivalAirportsRetrieved.current = true
+      flightSearchAPI.getArrivalAirports(setArrivalAirportList, () => {
+        toast("ERROR: Failed to retrieve arrival airports");
+      });
+    }
+  }
+
+  function getDepartureAirports() {
+    if (!departureAirportsRetrieved.current) {
+      departureAirportsRetrieved.current = true
+      flightSearchAPI.getDepartureAirports(setDepartureAirportList, () => {
+        toast("ERROR: Failed to retrieve departure airports");
+      });
+    }
+  }
+
   // execute on page load
   useEffect(() => {
-    flightSearchAPI.getArrivalAirports(setArrivalAirportList);
-    flightSearchAPI.getDepartureAirports(setDepartureAirportList);
+    getArrivalAirports();
+    getDepartureAirports();
   }, []);
 
   return (
     <div className="FlightSearch">
+      <ToastContainer position="top-center" />
       <h1 className="FlightSearchHeader">Your Dream Trip Awaits</h1>
       <div className="FlightSearchUpperFilters">
         <select
@@ -117,27 +140,23 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
           labelText="From?"
           onSelectAirport={setDepartureAirport}
           inputID={departAirportSearchFilterID}
-          defaultInputValue="Atlanta (ATL)"
         ></AirportSearchFilter>
         <AirportSearchFilter
           airports={arrivalAirportList}
           labelText="To?"
           onSelectAirport={setArrivalAirport}
           inputID={arriveAirportSearchFilterID}
-          defaultInputValue="Tucson (TUS)"
         ></AirportSearchFilter>
         <FlightDateSelect
           labelText="Departure"
           onSelectDate={setDepartureDate}
           inputID={departureDateFilterID}
-          defaultInputValue={"2023-01-01"}
         ></FlightDateSelect>
         {makingRoundTripSelection && (
           <FlightDateSelect
             labelText="Return"
             onSelectDate={setReturnDate}
             inputID={returnDateFilterID}
-            defaultInputValue={"2023-01-01"}
           ></FlightDateSelect>
         )}
         <button onClick={handleSearchClick}>Go!</button>

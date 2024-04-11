@@ -7,6 +7,8 @@ import { FlightSearchQuery } from "../../model/flightSearchQuery";
 import { FlightSelectFilterButtons } from "./flightSelectFilterButtons";
 import { FlightSelectFilterOption } from "../../model/flightSelectFilterOption";
 import { submitReservation } from "../flightReservation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   searchQueries: FlightSearchQuery[];
@@ -23,6 +25,13 @@ export function FlightSelect({ searchQueries }: Props) {
   const [selectedTrips, setSelectedTrips] = useState<Flight[][]>([]);
   const [selectedFilter, setSelectedFilter] = useState(filterOptions[0]);
   const [currentBatchNum, setCurrentBatchNum] = useState(1);
+  const [noTripsMessageShown, setNoTripsMessageShown] = useState(false);
+
+  // skip useEffect trigger on first mount
+  const [didMount, setDidMount] = useState(false);
+  useEffect(() => {
+    setDidMount(true);
+  }, []);
 
   function resetFlightSelection() {
     if (trips.length > 0) setTrips([]);
@@ -31,33 +40,55 @@ export function FlightSelect({ searchQueries }: Props) {
 
   // clear selection & reset selectable trips when new search criteria is submitted
   useEffect(() => {
-    console.log("search critieria changed:" + searchQueries);
-    resetFlightSelection();
-    getTripsFromCurrentSelections();
+    if (didMount) {
+      console.log("search critieria changed:" + searchQueries);
+      setNoTripsMessageShown(false);
+      resetFlightSelection();
+      getTripsFromCurrentSelections();
+    }
   }, [searchQueries]);
 
   // get next set of trips to select when selected trips changes
   useEffect(() => {
-    console.log("selected trips changed:" + selectedTrips);
-    if (selectedTrips.length != searchQueries.length)
-      getTripsFromCurrentSelections();
-    else {
-      setTrips([]);
+    if (didMount) {
+      setNoTripsMessageShown(false);
+      console.log("selected trips changed:" + selectedTrips);
+      if (selectedTrips.length != searchQueries.length)
+        getTripsFromCurrentSelections();
+      else {
+        setTrips([]);
+      }
     }
   }, [selectedTrips]);
 
   // update trips on filter change
   useEffect(() => {
-    console.log("filter changed: " + selectedFilter.value);
-    getTripsFromCurrentSelections();
+    if (didMount) {
+      console.log("filter changed: " + selectedFilter.value);
+      getTripsFromCurrentSelections();
+    }
   }, [selectedFilter]);
+
+  useEffect(() => {
+    if (
+      trips.length === 0 &&
+      searchQueries.length > 0 &&
+      !isTripSelectionFull()
+    ) {
+      toast("No trips found");
+      setNoTripsMessageShown(true);
+    }
+  }, [trips]);
 
   function getTripsFromCurrentSelections() {
     flightSearchAPI.getTrips(
       searchQueries[selectedTrips.length],
       currentBatchNum,
       setTrips,
-      selectedFilter.value
+      selectedFilter.value,
+      () => {
+        toast("ERROR: Failed to get trips");
+      }
     );
   }
 
@@ -117,7 +148,15 @@ export function FlightSelect({ searchQueries }: Props) {
   function handleReservationClick() {
     console.log("reservation clicked");
     selectedTrips.map((trip) => {
-      submitReservation(trip);
+      submitReservation(
+        trip,
+        () => {
+          toast("Reservation Success!");
+        },
+        () => {
+          toast("ERROR: Failed to submit reservation");
+        }
+      );
     });
   }
 

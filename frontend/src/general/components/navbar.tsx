@@ -1,4 +1,4 @@
-import cs509_wpi_logo from "./cs509_wpi_logo.png";
+import cs509_wpi_logo from "../cs509_wpi_logo.png";
 import "./navbar.css";
 
 const Navbar = () => {
