@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     justify-content: end;
-
     width: 100%;
 }
 
@@ -15,6 +14,16 @@
     height: 100%;
 }
 
-.FlightDateSelect input:hover {
+input:hover {
     cursor: pointer;
 }
+
+.TimeRangeSelect {
+    display: flex;
+    flex-direction: row;
+    gap: 1vw;
+    font-weight: bold;
+    align-items: center;
+    width: 100%;
+}
+

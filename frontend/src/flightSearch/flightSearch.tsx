@@ -48,6 +48,8 @@ export async function getTrips(
       arriveAirport: searchQuery.arriveAirport,
       departDate: searchQuery.date,
       connectionNum: searchQuery.connectionNum,
+      departTimeStart: searchQuery.startTime,
+      departTimeEnd: searchQuery.endTime,
       sort: sortMethod,
       order: "ASC",
       timeout: 5000,
