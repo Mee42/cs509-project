@@ -1,10 +1,11 @@
 import "./FlightSearchFilters.css";
 import AirportSearchFilter from "./AirportSearchFilter";
-import FlightDateSelect from "./FlightDateSelect";
-import { useEffect, useState, useRef} from "react";
+import FlightDateTimeSelect from "./FlightDateSelect";
+import { useEffect, useState, useRef } from "react";
 import * as flightSearchAPI from "../flightSearch";
 import { FlightSearchQuery } from "../../model/flightSearchQuery";
 import { ToastContainer, toast } from "react-toastify";
+import Select from "react-select";
 import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
@@ -19,7 +20,12 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
   const [departureAirport, setDepartureAirport] = useState<string>("");
   const [arrivalAirport, setArrivalAirport] = useState<string>("");
   const [departureDate, setDepartureDate] = useState<string>("");
+  const [departureStartTime, setDepartureStartTime] =
+    useState<string>("00:00:00");
+  const [departureEndTime, setDepartureEndTime] = useState<string>("23:59:00");
   const [returnDate, setReturnDate] = useState<string>("");
+  const [returnStartTime, setReturnStartTime] = useState<string>("00:00:00");
+  const [returnEndTime, setReturnEndTime] = useState<string>("23:59:00");
   const [connectionNum, setConnectionNum] = useState<number>(0);
   const [makingRoundTripSelection, setMakingRoundTripSelection] =
     useState<boolean>(false);
@@ -30,6 +36,12 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
   const returnDateFilterID = "ReturnDateFilter";
   const arrivalAirportsRetrieved = useRef(false);
   const departureAirportsRetrieved = useRef(false);
+  const roundTripOptions = ["One-Way", "Round-Trip"];
+  const connectionNumOptions = [
+    "0 Connections",
+    "1 Connection",
+    "2 Connections",
+  ];
 
   function packSearchQueries() {
     let searchQueries: FlightSearchQuery[] = [
@@ -37,7 +49,8 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
         arrivalAirport,
         departureAirport,
         departureDate,
-        "",
+        departureStartTime,
+        departureEndTime,
         connectionNum
       ),
     ];
@@ -48,7 +61,8 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
           departureAirport,
           arrivalAirport,
           returnDate,
-          "",
+          returnStartTime,
+          returnEndTime,
           connectionNum
         )
       );
@@ -89,7 +103,7 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
 
   function getArrivalAirports() {
     if (!arrivalAirportsRetrieved.current) {
-      arrivalAirportsRetrieved.current = true
+      arrivalAirportsRetrieved.current = true;
       flightSearchAPI.getArrivalAirports(setArrivalAirportList, () => {
         toast("ERROR: Failed to retrieve arrival airports");
       });
@@ -98,7 +112,7 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
 
   function getDepartureAirports() {
     if (!departureAirportsRetrieved.current) {
-      departureAirportsRetrieved.current = true
+      departureAirportsRetrieved.current = true;
       flightSearchAPI.getDepartureAirports(setDepartureAirportList, () => {
         toast("ERROR: Failed to retrieve departure airports");
       });
@@ -116,48 +130,67 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
       <ToastContainer position="top-center" />
       <h1 className="FlightSearchHeader">Your Dream Trip Awaits</h1>
       <div className="FlightSearchUpperFilters">
-        <select
+        <Select
           onChange={() => {
             setMakingRoundTripSelection(!makingRoundTripSelection);
           }}
-        >
-          <option>One-Way</option>
-          <option>Round Trip</option>
-        </select>
-        <select
-          onChange={(event) => {
-            setConnectionNum(Number(event.target.value));
+          options={roundTripOptions.map((selection) => ({
+            value: selection,
+            label: selection,
+          }))}
+          defaultValue={{
+            label: roundTripOptions[0],
+            value: roundTripOptions[0],
           }}
-        >
-          <option>0</option>
-          <option>1</option>
-          <option>2</option>
-        </select>
+        ></Select>
+        <Select
+          onChange={(selectedOption) => {
+            setConnectionNum(Number(selectedOption?.value[0]));
+          }}
+          options={connectionNumOptions.map((selection) => ({
+            value: selection,
+            label: selection,
+          }))}
+          defaultValue={{
+            label: connectionNumOptions[0],
+            value: connectionNumOptions[0],
+          }}
+        ></Select>
       </div>
       <div className="FlightSearchLowerFilters">
         <AirportSearchFilter
           airports={departureAirportList}
-          labelText="From?"
+          outerLabelText=""
+          innerLabelText="From?"
           onSelectAirport={setDepartureAirport}
           inputID={departAirportSearchFilterID}
         ></AirportSearchFilter>
         <AirportSearchFilter
           airports={arrivalAirportList}
-          labelText="To?"
+          outerLabelText=""
+          innerLabelText="To?"
           onSelectAirport={setArrivalAirport}
           inputID={arriveAirportSearchFilterID}
         ></AirportSearchFilter>
-        <FlightDateSelect
+        <FlightDateTimeSelect
           labelText="Departure"
           onSelectDate={setDepartureDate}
+          onSelectStartTime={setDepartureStartTime}
+          onSelectEndTime={setDepartureEndTime}
+          startTimeDefaultValue={departureStartTime}
+          endTimeDefaultValue={departureEndTime}
           inputID={departureDateFilterID}
-        ></FlightDateSelect>
+        ></FlightDateTimeSelect>
         {makingRoundTripSelection && (
-          <FlightDateSelect
+          <FlightDateTimeSelect
             labelText="Return"
             onSelectDate={setReturnDate}
+            onSelectStartTime={setReturnStartTime}
+            onSelectEndTime={setReturnEndTime}
+            startTimeDefaultValue={returnStartTime}
+            endTimeDefaultValue={returnEndTime}
             inputID={returnDateFilterID}
-          ></FlightDateSelect>
+          ></FlightDateTimeSelect>
         )}
         <button onClick={handleSearchClick}>Go!</button>
       </div>
