@@ -40,7 +40,7 @@ export async function getTrips(
   batchNum: number,
   setTrips: CallableFunction,
   sortMethod: string,
-  errorFunc: CallableFunction
+  errorFunc: CallableFunction = () => {}
 ) {
   await axios
     .post(flightSearchEndpoint + "/" + batchNum, {
