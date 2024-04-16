@@ -1,3 +1,4 @@
+import "./App.css";
 import FlightSearchFilters from "./flightSearch/components/FlightSearchFilters";
 import Navbar from "./general/components/navbar";
 import { useState } from "react";

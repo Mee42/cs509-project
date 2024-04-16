@@ -1,4 +1,5 @@
 import "./flightSelect.css";
+import { usePrevious } from "../UtilFuncs";
 import { useEffect, useState } from "react";
 import { TripCard } from "./TripCard";
 import { Flight } from "../../model/flight";
@@ -7,7 +8,7 @@ import { FlightSearchQuery } from "../../model/flightSearchQuery";
 import { FlightSelectFilterButtons } from "./flightSelectFilterButtons";
 import { FlightSelectFilterOption } from "../../model/flightSelectFilterOption";
 import { submitReservation } from "../flightReservation";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
@@ -22,10 +23,11 @@ export function FlightSelect({ searchQueries }: Props) {
   ];
 
   const [trips, setTrips] = useState<Flight[][]>([]);
+  const [nextTripBatch, setNextTripBatch] = useState<Flight[][]>([]);
   const [selectedTrips, setSelectedTrips] = useState<Flight[][]>([]);
   const [selectedFilter, setSelectedFilter] = useState(filterOptions[0]);
   const [currentBatchNum, setCurrentBatchNum] = useState(1);
-  const [noTripsMessageShown, setNoTripsMessageShown] = useState(false);
+  const prevBatchNum = usePrevious(currentBatchNum);
 
   // skip useEffect trigger on first mount
   const [didMount, setDidMount] = useState(false);
@@ -34,24 +36,27 @@ export function FlightSelect({ searchQueries }: Props) {
   }, []);
 
   function resetFlightSelection() {
-    if (trips.length > 0) setTrips([]);
     if (selectedTrips.length > 0) setSelectedTrips([]);
+  }
+
+  function goBackToFirstBatch() {
+    setCurrentBatchNum(1);
+    getTripsFromCurrentSelections();
+    getNextTripBatch();
   }
 
   // clear selection & reset selectable trips when new search criteria is submitted
   useEffect(() => {
     if (didMount) {
       console.log("search critieria changed:" + searchQueries);
-      setNoTripsMessageShown(false);
       resetFlightSelection();
-      getTripsFromCurrentSelections();
+      goBackToFirstBatch();
     }
   }, [searchQueries]);
 
   // get next set of trips to select when selected trips changes
   useEffect(() => {
     if (didMount) {
-      setNoTripsMessageShown(false);
       console.log("selected trips changed:" + selectedTrips);
       if (selectedTrips.length != searchQueries.length)
         getTripsFromCurrentSelections();
@@ -65,7 +70,7 @@ export function FlightSelect({ searchQueries }: Props) {
   useEffect(() => {
     if (didMount) {
       console.log("filter changed: " + selectedFilter.value);
-      getTripsFromCurrentSelections();
+      goBackToFirstBatch();
     }
   }, [selectedFilter]);
 
@@ -75,10 +80,22 @@ export function FlightSelect({ searchQueries }: Props) {
       searchQueries.length > 0 &&
       !isTripSelectionFull()
     ) {
+      console.log("no trips");
       toast("No trips found");
-      setNoTripsMessageShown(true);
     }
   }, [trips]);
+
+  useEffect(() => {
+    if (didMount) {
+      if (currentBatchNum > prevBatchNum) {
+        setTrips(nextTripBatch);
+        getNextTripBatch();
+      } else {
+        getTripsFromCurrentSelections();
+        getNextTripBatch();
+      }
+    }
+  }, [currentBatchNum]);
 
   function getTripsFromCurrentSelections() {
     flightSearchAPI.getTrips(
@@ -89,6 +106,17 @@ export function FlightSelect({ searchQueries }: Props) {
       () => {
         toast("ERROR: Failed to get trips");
       }
+    );
+  }
+
+  function getNextTripBatch() {
+    let nextBatchNum = currentBatchNum + 1;
+    console.log("getting batch " + nextBatchNum);
+    flightSearchAPI.getTrips(
+      searchQueries[selectedTrips.length],
+      nextBatchNum,
+      setNextTripBatch,
+      selectedFilter.value
     );
   }
 
@@ -160,14 +188,38 @@ export function FlightSelect({ searchQueries }: Props) {
     });
   }
 
+  function decrementBatchNumber() {
+    if (currentBatchNum != 1) {
+      setCurrentBatchNum(currentBatchNum - 1);
+    }
+  }
+
+  function incrementBatchNumber() {
+    if (nextTripBatch.length != 0) {
+      setCurrentBatchNum(currentBatchNum + 1);
+    }
+  }
+
   return (
     <div className="FlightSelectContainer">
       {searchQueries.length > 0 && (
-        <FlightSelectFilterButtons
-          filterOptions={filterOptions}
-          onChange={setSelectedFilter}
-          selectedOption={selectedFilter}
-        />
+        <div className="FlightSelectModifiers">
+          {currentBatchNum != 1 && (
+            <button className="BatchButton" onClick={decrementBatchNumber}>
+              {"<"}
+            </button>
+          )}
+          <FlightSelectFilterButtons
+            filterOptions={filterOptions}
+            onChange={setSelectedFilter}
+            selectedOption={selectedFilter}
+          />
+          {nextTripBatch.length > 0 && (
+            <button className="BatchButton" onClick={incrementBatchNumber}>
+              {">"}
+            </button>
+          )}
+        </div>
       )}
       <div className="TripSelectContainer">
         <div className="TripCardContainer SelectedTrips">

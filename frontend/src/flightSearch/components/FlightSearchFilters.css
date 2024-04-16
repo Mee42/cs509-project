@@ -17,15 +17,10 @@
 }
 
 .FlightSearch button {
-    background-image: linear-gradient(-180deg, lightcoral 0%, rgb(165, 42, 42) 100%);
-    border-radius: 10px;
-    color: #FFFFFF;
-    font-size: 16px;
     width: 15%;
     height: 55%;
-    border: 0px;
-    cursor: pointer;
-  }
+    border-radius: 10px;
+}
   
   .FlightSearch button:hover {
     background-image: linear-gradient(-180deg, #1D95C9 0%, #17759C 100%);
