@@ -80,8 +80,10 @@ public class FlightService {
         }
 
         List<Flight[]> flights = new ArrayList<>();
-        for (Flight t : combinedFlightArray)
-            flights.add(t.getFlights());
+        int start, end = flightInfo.start + flightInfo.count;
+        for (start = flightInfo.start; start < end; start++)
+            flights.add(combinedFlightArray[start].getFlights());
+
         return flights;
     }
 

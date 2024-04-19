@@ -5,7 +5,9 @@
       <DefaultCasing>exact</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
       <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
-      <Grants>|root||root||ALTER|G
+      <Grants>|root||root||ALLOW_NONEXISTENT_DEFINER|G
+|root||root|localhost|ALLOW_NONEXISTENT_DEFINER|G
+|root||root||ALTER|G
 |root||root|localhost|ALTER|G
 |root||root||ALTER ROUTINE|G
 |root||root|localhost|ALTER ROUTINE|G
@@ -124,8 +126,8 @@
 |root||mysql.session|localhost|SESSION_VARIABLES_ADMIN|G
 |root||root||SESSION_VARIABLES_ADMIN|G
 |root||root|localhost|SESSION_VARIABLES_ADMIN|G
-|root||root||SET_USER_ID|G
-|root||root|localhost|SET_USER_ID|G
+|root||root||SET_ANY_DEFINER|G
+|root||root|localhost|SET_ANY_DEFINER|G
 |root||root||SHOW DATABASES|G
 |root||root|localhost|SHOW DATABASES|G
 |root||root||SHOW VIEW|G
@@ -150,6 +152,8 @@
 |root||root|localhost|TABLE_ENCRYPTION_ADMIN|G
 |root||root||TELEMETRY_LOG_ADMIN|G
 |root||root|localhost|TELEMETRY_LOG_ADMIN|G
+|root||root||TRANSACTION_GTID_TAG|G
+|root||root|localhost|TRANSACTION_GTID_TAG|G
 |root||root||TRIGGER|G
 |root||root|localhost|TRIGGER|G
 |root||root||UPDATE|G
@@ -159,26 +163,8 @@
 |root||root||grant option|G
 |root||root|localhost|grant option|G
 performance_schema|schema||mysql.session|localhost|SELECT|G
-sys|schema||mysql.sys|localhost|TRIGGER|G
-tests|schema||chinh||ALTER|G
-tests|schema||chinh||ALTER ROUTINE|G
-tests|schema||chinh||CREATE|G
-tests|schema||chinh||CREATE ROUTINE|G
-tests|schema||chinh||CREATE TEMPORARY TABLES|G
-tests|schema||chinh||CREATE VIEW|G
-tests|schema||chinh||DELETE|G
-tests|schema||chinh||DROP|G
-tests|schema||chinh||EVENT|G
-tests|schema||chinh||EXECUTE|G
-tests|schema||chinh||INDEX|G
-tests|schema||chinh||INSERT|G
-tests|schema||chinh||LOCK TABLES|G
-tests|schema||chinh||REFERENCES|G
-tests|schema||chinh||SELECT|G
-tests|schema||chinh||SHOW VIEW|G
-tests|schema||chinh||TRIGGER|G
-tests|schema||chinh||UPDATE|G</Grants>
-      <ServerVersion>8.0.36</ServerVersion>
+sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
+      <ServerVersion>8.3.0</ServerVersion>
     </root>
     <collation id="2" parent="1" name="armscii8_bin">
       <Charset>armscii8</Charset>
@@ -1079,167 +1065,161 @@ tests|schema||chinh||UPDATE|G</Grants>
     <collation id="287" parent="1" name="utf8mb4_zh_0900_as_cs">
       <Charset>utf8mb4</Charset>
     </collation>
-    <schema id="288" parent="1" name="atm">
-      <CollationName>utf8mb4_0900_ai_ci</CollationName>
-    </schema>
-    <schema id="289" parent="1" name="flights">
+    <schema id="288" parent="1" name="flights">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-03-24.00:08:12</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-04-19.15:28:08</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="290" parent="1" name="information_schema">
+    <schema id="289" parent="1" name="information_schema">
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
-    <schema id="291" parent="1" name="mysql">
+    <schema id="290" parent="1" name="mysql">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="292" parent="1" name="performance_schema">
+    <schema id="291" parent="1" name="performance_schema">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="293" parent="1" name="sys">
+    <schema id="292" parent="1" name="sys">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <user id="294" parent="1" name="chinh">
-      <Plugin>caching_sha2_password</Plugin>
-    </user>
-    <user id="295" parent="1" name="mysql.infoschema">
+    <user id="293" parent="1" name="mysql.infoschema">
       <CanLogin>0</CanLogin>
       <Host>localhost</Host>
       <Plugin>caching_sha2_password</Plugin>
     </user>
-    <user id="296" parent="1" name="mysql.session">
+    <user id="294" parent="1" name="mysql.session">
       <CanLogin>0</CanLogin>
       <Host>localhost</Host>
       <Plugin>caching_sha2_password</Plugin>
     </user>
-    <user id="297" parent="1" name="mysql.sys">
+    <user id="295" parent="1" name="mysql.sys">
       <CanLogin>0</CanLogin>
       <Host>localhost</Host>
       <Plugin>caching_sha2_password</Plugin>
     </user>
-    <user id="298" parent="1" name="root">
+    <user id="296" parent="1" name="root">
       <Plugin>caching_sha2_password</Plugin>
     </user>
-    <user id="299" parent="1" name="root">
+    <user id="297" parent="1" name="root">
       <Host>localhost</Host>
       <Plugin>caching_sha2_password</Plugin>
     </user>
-    <table id="300" parent="289" name="ReservedFlight">
+    <table id="298" parent="288" name="ReservedFlight">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="301" parent="289" name="deltas">
+    <table id="299" parent="288" name="deltas">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="302" parent="289" name="southwests">
+    <table id="300" parent="288" name="southwests">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <column id="303" parent="300" name="Id">
+    <column id="301" parent="298" name="Id">
       <AutoIncrement>4</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="304" parent="300" name="FlightId">
+    <column id="302" parent="298" name="FlightId">
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="305" parent="300" name="FlightTable">
+    <column id="303" parent="298" name="FlightTable">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <index id="306" parent="300" name="PRIMARY">
+    <index id="304" parent="298" name="PRIMARY">
       <ColNames>Id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="307" parent="300" name="PRIMARY">
+    <key id="305" parent="298" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="308" parent="301" name="Id">
+    <column id="306" parent="299" name="Id">
       <AutoIncrement>15974</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="309" parent="301" name="DepartDateTime">
+    <column id="307" parent="299" name="DepartDateTime">
       <DasType>datetime|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="310" parent="301" name="ArriveDateTime">
+    <column id="308" parent="299" name="ArriveDateTime">
       <DasType>datetime|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="311" parent="301" name="DepartAirport">
+    <column id="309" parent="299" name="DepartAirport">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="312" parent="301" name="ArriveAirport">
+    <column id="310" parent="299" name="ArriveAirport">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="313" parent="301" name="FlightNumber">
+    <column id="311" parent="299" name="FlightNumber">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <index id="314" parent="301" name="PRIMARY">
+    <index id="312" parent="299" name="PRIMARY">
       <ColNames>Id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="315" parent="301" name="PRIMARY">
+    <key id="313" parent="299" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="316" parent="302" name="Id">
+    <column id="314" parent="300" name="Id">
       <AutoIncrement>30914</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="317" parent="302" name="DepartDateTime">
+    <column id="315" parent="300" name="DepartDateTime">
       <DasType>datetime|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="318" parent="302" name="ArriveDateTime">
+    <column id="316" parent="300" name="ArriveDateTime">
       <DasType>datetime|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="319" parent="302" name="DepartAirport">
+    <column id="317" parent="300" name="DepartAirport">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="320" parent="302" name="ArriveAirport">
+    <column id="318" parent="300" name="ArriveAirport">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="321" parent="302" name="FlightNumber">
+    <column id="319" parent="300" name="FlightNumber">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <index id="322" parent="302" name="PRIMARY">
+    <index id="320" parent="300" name="PRIMARY">
       <ColNames>Id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="323" parent="302" name="PRIMARY">
+    <key id="321" parent="300" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

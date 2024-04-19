@@ -31,8 +31,7 @@ public class FlightRepository {
                         "WHEN (:sortBy = 'Depart') THEN StartDepartDateTime " +
                         "WHEN (:sortBy = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
-                "LIMIT :start, :count";
+                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END";
 
         return jdbcClient.sql(sql)
                 .paramSource(flightInfo)
@@ -65,8 +64,7 @@ public class FlightRepository {
                         "WHEN (:sortBy = 'Depart') THEN StartDepartDateTime " +
                         "WHEN (:sortBy = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
-                "LIMIT :start, :count";
+                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END";
 
         return jdbcClient.sql(sql)
                 .paramSource(flightInfo)
@@ -108,8 +106,7 @@ public class FlightRepository {
                         "WHEN (:sortBy = 'Depart') THEN StartDepartDateTime " +
                         "WHEN (:sortBy = 'TravelTime') THEN ABS(TIMESTAMPDIFF(MINUTE, StartDepartDateTime, FinalArriveDateTime)) " +
                         "ELSE FinalArriveDateTime " +
-                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END " +
-                "LIMIT :start, :count";
+                    "END * CASE WHEN (:orderBy = 'ASC') THEN 1 ELSE -1 END";
 
         return jdbcClient.sql(sql)
                 .paramSource(flightInfo)
