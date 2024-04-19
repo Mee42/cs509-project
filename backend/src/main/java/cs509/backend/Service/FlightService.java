@@ -81,7 +81,7 @@ public class FlightService {
 
         List<Flight[]> flights = new ArrayList<>();
         int start, end = flightInfo.start + flightInfo.count;
-        for (start = flightInfo.start; start < end; start++)
+        for (start = flightInfo.start; start < end && start < combinedFlightArray.length; start++)
             flights.add(combinedFlightArray[start].getFlights());
 
         return flights;
