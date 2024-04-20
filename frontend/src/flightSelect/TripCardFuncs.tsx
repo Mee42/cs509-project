@@ -1,5 +1,6 @@
+import airportTimezone from "airport-timezone";
 import { Flight } from "../model/flight";
-import moment from "moment";
+import moment from "moment-timezone";
 
 export function getFlightImageURI() {
   return (
@@ -34,9 +35,15 @@ export function msToHoursMinutes(ms: number) {
   ];
 }
 
-export function formatDateString(flightDateTimeStr: string) {
-  const date: number = Date.parse(flightDateTimeStr);
-  return moment(date).format("MM/DD/YYYY hh:mm a");
+export function formatDateString(
+  flightDateTimeStr: string,
+  airportCode: string
+) {
+  var format: string = "MM/DD/YYYY hh:mm a";
+  var timezone: string = getTimezoneFromAirportCode(airportCode);
+  return moment(flightDateTimeStr + "Z")
+    .tz(timezone)
+    .format(format);
 }
 
 export function getAirportID(fullAirportString: string) {
@@ -58,4 +65,14 @@ export function getFlightNumberSubStr(trip: Flight[]) {
       return flight.flightNumber;
     })
     .join(", ");
+}
+
+export function getTimezoneFromAirportCode(airportCode: string) {
+  return airportTimezone.filter((airport) => {
+    return airport.code === airportCode;
+  })[0].timezone;
+}
+
+export function getAirportCodeFromAirportString(airportString: string) {
+  return airportString.split("(")[1].split(")")[0];
 }
