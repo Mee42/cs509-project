@@ -5,15 +5,11 @@ import * as helper from "../TripCardFuncs";
 interface Props {
   trip: Flight[];
   onClick?: CallableFunction;
-  isRemovable?: boolean;
-  onRemoveClick?: CallableFunction;
 }
 
 export function TripCard({
   trip,
   onClick = () => {},
-  isRemovable = true,
-  onRemoveClick = () => {},
 }: Props) {
   const [TravelTimeHours, TravelTimeMinutes] = helper.msToHoursMinutes(
     helper.getTotalTravelTime(trip)
@@ -30,8 +26,8 @@ export function TripCard({
       <div className="TripCardDetails">
         <div className="TripStartEnd">
           <div>
-            {helper.formatDateString(trip[0].departDateTime)} -{" "}
-            {helper.formatDateString(trip[trip.length - 1].arriveDateTime)}
+            {helper.formatDateString(trip[0].departDateTime, helper.getAirportCodeFromAirportString(trip[0].departAirport))} -{" "}
+            {helper.formatDateString(trip[trip.length - 1].arriveDateTime, helper.getAirportCodeFromAirportString(trip[trip.length - 1].arriveAirport))}
           </div>
           <div className="TripCardSubtext">
             {helper.getFlightNumberSubStr(trip)}
