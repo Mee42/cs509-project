@@ -25,14 +25,18 @@ export function getDepartureAirports(
   setDepartureAirportList: CallableFunction,
   errorFunc: CallableFunction
 ) {
-  getAirports(setDepartureAirportList, departureAirportsEndpoint, errorFunc);
+  return getAirports(
+    setDepartureAirportList,
+    departureAirportsEndpoint,
+    errorFunc
+  );
 }
 
 export function getArrivalAirports(
   setArrivalAirportList: CallableFunction,
   errorFunc: CallableFunction
 ) {
-  getAirports(setArrivalAirportList, arrivalAirportsEndpoint, errorFunc);
+  return getAirports(setArrivalAirportList, arrivalAirportsEndpoint, errorFunc);
 }
 
 export async function getTrips(
@@ -42,7 +46,7 @@ export async function getTrips(
   sortMethod: string,
   errorFunc: CallableFunction = () => {}
 ) {
-  await axios
+  return await axios
     .post(flightSearchEndpoint + "/" + batchNum, {
       departAirport: searchQuery.departAirport,
       arriveAirport: searchQuery.arriveAirport,
