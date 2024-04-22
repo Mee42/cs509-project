@@ -1,6 +1,7 @@
 import "./TripCard.css";
 import { Flight } from "../../model/flight";
 import * as helper from "../TripCardFuncs";
+import * as tz from "../../general/timezone_funcs"
 
 interface Props {
   trip: Flight[];
@@ -12,8 +13,11 @@ export function TripCard({
   onClick = () => {},
 }: Props) {
   const [TravelTimeHours, TravelTimeMinutes] = helper.msToHoursMinutes(
-    helper.getTotalTravelTime(trip)
-  );
+    helper.getTotalTravelTime(trip));
+  
+  const firstFlight = trip[0];
+  const lastFlight = trip[trip.length - 1];
+  const dateFormat = "MM/DD/YYYY hh:mm a"
 
   return (
     <div
@@ -26,8 +30,8 @@ export function TripCard({
       <div className="TripCardDetails">
         <div className="TripStartEnd">
           <div>
-            {helper.formatDateString(trip[0].departDateTime, helper.getAirportCodeFromAirportString(trip[0].departAirport))} -{" "}
-            {helper.formatDateString(trip[trip.length - 1].arriveDateTime, helper.getAirportCodeFromAirportString(trip[trip.length - 1].arriveAirport))}
+            {tz.convertAndFormatDateString(firstFlight.departDateTime, firstFlight.departAirport, dateFormat)} - {" "}
+            {tz.convertAndFormatDateString(lastFlight.arriveDateTime, lastFlight.arriveAirport, dateFormat)}
           </div>
           <div className="TripCardSubtext">
             {helper.getFlightNumberSubStr(trip)}
