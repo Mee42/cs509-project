@@ -3,7 +3,7 @@ import { submitReservationEndpoint } from "../endpoints";
 import { Flight } from "../model/flight";
 
 export async function submitReservation(trip: Flight[], successFunc: CallableFunction, errorFunc: CallableFunction) {
-  await axios
+  return await axios
     .post(submitReservationEndpoint, {
       flights: trip,
     })
