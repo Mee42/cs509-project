@@ -18,8 +18,8 @@ function AirportSearchFilter({
   inputID,
 }: Props) {
   return (
-    <div className="FlightAirportSelect">
-      <label>{outerLabelText}</label>
+    <form className="FlightAirportSelect" data-testid={inputID}>
+      <label htmlFor={inputID}>{outerLabelText}</label>
       <Select
         id={inputID}
         className="basic-single"
@@ -36,7 +36,7 @@ function AirportSearchFilter({
           document.getElementById(inputID)!.style.outline = "";
         }}
       ></Select>
-    </div>
+    </form>
   );
 }
 
