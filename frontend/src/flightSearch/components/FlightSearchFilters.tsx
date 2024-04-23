@@ -12,7 +12,7 @@ interface Props {
   setSearchQueries: CallableFunction;
 }
 
-const FlightSearchFilters = ({ setSearchQueries }: Props) => {
+export const FlightSearchFilters = ({ setSearchQueries }: Props) => {
   const [departureAirportList, setDepartureAirportList] = useState<string[]>(
     []
   );
@@ -130,32 +130,36 @@ const FlightSearchFilters = ({ setSearchQueries }: Props) => {
       <ToastContainer position="top-center" />
       <h1 className="FlightSearchHeader">Your Dream Trip Awaits</h1>
       <div className="FlightSearchUpperFilters">
-        <Select
-          onChange={() => {
-            setMakingRoundTripSelection(!makingRoundTripSelection);
-          }}
-          options={roundTripOptions.map((selection) => ({
-            value: selection,
-            label: selection,
-          }))}
-          defaultValue={{
-            label: roundTripOptions[0],
-            value: roundTripOptions[0],
-          }}
-        ></Select>
-        <Select
-          onChange={(selectedOption) => {
-            setConnectionNum(Number(selectedOption?.value[0]));
-          }}
-          options={connectionNumOptions.map((selection) => ({
-            value: selection,
-            label: selection,
-          }))}
-          defaultValue={{
-            label: connectionNumOptions[0],
-            value: connectionNumOptions[0],
-          }}
-        ></Select>
+        <div data-testid="RoundTripSelect">
+          <Select
+            onChange={() => {
+              setMakingRoundTripSelection(!makingRoundTripSelection);
+            }}
+            options={roundTripOptions.map((selection) => ({
+              value: selection,
+              label: selection,
+            }))}
+            defaultValue={{
+              label: roundTripOptions[0],
+              value: roundTripOptions[0],
+            }}
+          ></Select>
+        </div>
+        <div data-testid="ConnectionNumSelect">
+          <Select
+            onChange={(selectedOption) => {
+              setConnectionNum(Number(selectedOption?.value[0]));
+            }}
+            options={connectionNumOptions.map((selection) => ({
+              value: selection,
+              label: selection,
+            }))}
+            defaultValue={{
+              label: connectionNumOptions[0],
+              value: connectionNumOptions[0],
+            }}
+          ></Select>
+        </div>
       </div>
       <div className="FlightSearchLowerFilters">
         <AirportSearchFilter

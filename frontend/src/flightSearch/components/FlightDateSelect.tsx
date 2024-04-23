@@ -24,6 +24,7 @@ const FlightDateTimeSelect = ({
       <label>{labelText}</label>
       <input
         id={inputID}
+        data-testid={inputID}
         type="date"
         className="form-control"
         onChange={(event) => {
@@ -33,8 +34,10 @@ const FlightDateTimeSelect = ({
       />
       <div className="TimeRangeSelect">
         <input
-          className="form-control"
+          id={inputID + "TimeStart"}
+          data-testid={inputID + "TimeStart"}
           type="time"
+          className="form-control"
           defaultValue={startTimeDefaultValue}
           onChange={(event) => {
             onSelectStartTime(event.target.value + ":00");
@@ -42,8 +45,10 @@ const FlightDateTimeSelect = ({
         ></input>
         <div>{"to"}</div>
         <input
-          className="form-control"
+          id={inputID + "TimeEnd"}
+          data-testid={inputID + "TimeEnd"}
           type="time"
+          className="form-control"
           defaultValue={endTimeDefaultValue}
           onChange={(event) => {
             onSelectEndTime(event.target.value + ":00");
