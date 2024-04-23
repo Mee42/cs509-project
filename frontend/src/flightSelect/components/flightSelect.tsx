@@ -154,6 +154,7 @@ export function FlightSelect({ searchQueries }: Props) {
         return (
           <TripCard
             trip={trip}
+            id={"SelectableTripCard" + idx}
             key={idx}
             onClick={() => {
               handleTripSelect(idx);
@@ -168,7 +169,7 @@ export function FlightSelect({ searchQueries }: Props) {
     return (
       selectedTrips.length > 0 &&
       selectedTrips.map((trip: Flight[], idx: number) => {
-        return <TripCard trip={trip} key={idx}></TripCard>;
+        return <TripCard trip={trip} id={"SelectedTripCard" + idx} key={idx}></TripCard>;
       })
     );
   }

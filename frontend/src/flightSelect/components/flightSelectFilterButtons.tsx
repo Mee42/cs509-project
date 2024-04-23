@@ -21,10 +21,13 @@ export function FlightSelectFilterButtons({
               <input
                 type="radio"
                 id={filterOption.id}
+                data-testid={filterOption.id}
                 name="FlightSelectFilter"
                 className="FlightSelectFilterButton"
                 checked={selectedOption.value === filterOption.value}
-                onChange={() => {onChange(filterOption)}}
+                onChange={() => {
+                  onChange(filterOption);
+                }}
               />
               <label htmlFor={filterOption.id}>{filterOption.label}</label>
             </li>
