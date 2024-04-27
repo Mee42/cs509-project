@@ -84,6 +84,17 @@ Recommend using Intellij as it has everything out of the box for spring MVC fram
         ) engine=InnoDB
      ```
 
+## To utilize Swagger UI, follow these steps:：
+Run Frontend and Backend: Ensure both the frontend and backend of the application are running.
+
+Access Swagger UI: Open a web browser and navigate to the following address:
+
+http://localhost:8080/swagger-ui/index.html#
+
+Explore API Documentation: Once the Swagger UI page loads, users will have access to the interactive documentation of the API. Here, they can explore the various endpoints, parameters, request payloads, and responses provided by the API.
+
+
+
 
 
 
