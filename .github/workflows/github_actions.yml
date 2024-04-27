@@ -1,0 +1,43 @@
+name: GitHub Actions CI/CD
+
+on: 
+  push:
+    branches: '**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          architecture: x64
+
+      - name: Backend Build and Test
+        run: |
+          cd ./backend
+          mvn test
+          cd ..
+
+      - name: Frontend Setup
+        run: |
+          cd ./frontend
+          npm install
+          cd ..
+
+      - name: Frontend Tests
+        run: |
+          cd ./frontend
+          npm run coverage
+          cd ..
+      
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          
