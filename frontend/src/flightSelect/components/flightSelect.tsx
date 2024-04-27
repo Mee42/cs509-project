@@ -87,7 +87,7 @@ export function FlightSelect({ searchQueries }: Props) {
 
   useEffect(() => {
     if (didMount) {
-      if (currentBatchNum > prevBatchNum) {
+      if (currentBatchNum > Number(prevBatchNum)) {
         setTrips(nextTripBatch);
         getNextTripBatch();
       } else {
