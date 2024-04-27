@@ -17,6 +17,12 @@ jobs:
       #     mvn package
       #     cd ..
 
+      - name: Frontend Setup
+        run: |
+          cd ./frontend
+          npm install
+          cd ..
+
       - name: Frontend Tests
         run: |
           cd ./frontend
