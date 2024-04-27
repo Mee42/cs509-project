@@ -1,5 +1,5 @@
 import "./flightSelect.css";
-import { usePrevious } from "../UsePrevious";
+import usePrevious from "use-previous";
 import { useEffect, useState } from "react";
 import { TripCard } from "./TripCard";
 import { Flight } from "../../model/flight";
