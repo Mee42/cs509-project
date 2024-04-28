@@ -21,7 +21,8 @@ jobs:
       - name: Backend Test
         run: |
           cd ./backend
-          mvn test
+          mvn -B package --file pom.xml
+          mvn verify
           cd ..
 
       - name: Upload coverage reports to Codecov
