@@ -15,16 +15,21 @@ npm install
 
 
 ## Backend Setup Instructions
-Recommend using Intellij as it has everything out of the box for spring MVC framework, could also use the Ultimate version by applying with student email to get free product for 1 year. The Ultimate version will include a database interface to connect and make query to the database without needing external workplace and many more.
+Recommend using Intellij as it has everything out of the box for spring MVC framework.
 
 1. Pull the project from github into IDE.
 2. Change the MySQL database login info in the application.properties file to your local info. Locate file at backend/src/main/resources.
 3. The backend is running at port 8080, to use another port, just change port number in the application.yml file. Locate file at backend/src/main/resources.
-4. Must also get Java SDK version 17 or higher. Intellij will suggest and get SDK internally if use Intellij.
+4. Must also get Java SDK version 17 or higher. Intellij will suggest and get SDK internally if use Intellij. For VSCode, get Java
 5. If pom dependencies are not recognized, just right click on pom.xml file, choose maven, and click reload project.
 6. Click run button on file BackendApplication to run. Locate at backend/src/main/java
+   - If you have Java JRE instead of Java SDK, can use this command:
+     ```cmd
+     cd ./backend
+     java cs509.backend.BackendApplication
+     ```
 
-## Backend implementation so far
+## Backend implementation
 ### API path
 1. The api endpoint is located at /api/flights
 2. The api returns everything in JSON format
@@ -74,7 +79,7 @@ Recommend using Intellij as it has everything out of the box for spring MVC fram
         ]
      }
      ```
-4. If you are using Hibernate framework (come with Intellij) then no need to do anything for backend up reservation as Hibernate will create the reservation list defined. Otherwise, in your database, create a table in MySQL called ReservedFlight with columns: Id, FlightId:
+4. If you are using Hibernate framework then no need to do anything for backend up reservation as Hibernate will create the reservation list defined. Otherwise, in your database, create a table in MySQL called ReservedFlight with columns: Id, FlightId:
      ```sql
         CREATE TABLE ReservedFlight (
            Id integer NOT NULL auto_increment,
