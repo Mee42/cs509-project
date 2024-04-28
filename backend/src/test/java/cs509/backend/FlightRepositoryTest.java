@@ -81,7 +81,7 @@ public class FlightRepositoryTest {
 
     @Test
     public void testGetFlightIdFromDeltas() {
-        Flight f = new Flight("Paris", "Japan", LocalDateTime.parse("2023-01-01T01:00:00"),
+        Flight f = new Flight("Paris (PA)", "Japan (JP)", LocalDateTime.parse("2023-01-01T01:00:00"),
                 LocalDateTime.parse("2023-01-01T00:03:00"), "WN309");
 
         Integer t = flightRepository.getFlightIdFromDeltas(f);

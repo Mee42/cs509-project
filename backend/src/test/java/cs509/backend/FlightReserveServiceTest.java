@@ -55,7 +55,7 @@ public class FlightReserveServiceTest {
     @Test
     @Rollback
     public void testReserveExistedFlight() {
-        Flight f = new Flight("Paris", "Japan", LocalDateTime.parse("2023-01-01T01:00:00"),
+        Flight f = new Flight("Paris (PA)", "Japan (JP)", LocalDateTime.parse("2023-01-01T01:00:00"),
                 LocalDateTime.parse("2023-01-01T00:03:00"), "WN309");
 
         FlightReserveForm form = new FlightReserveForm(new Flight[] {f});
@@ -68,7 +68,7 @@ public class FlightReserveServiceTest {
     @Test
     @Rollback
     public void testReserveNonExistedFlight() {
-        Flight f2 = new Flight("Random", "Japan", LocalDateTime.parse("2023-01-01T01:00:00"),
+        Flight f2 = new Flight("Random", "Japan (JP)", LocalDateTime.parse("2023-01-01T01:00:00"),
                 LocalDateTime.parse("2023-01-01T00:03:00"), "WN309");
 
         FlightReserveForm form = new FlightReserveForm(new Flight[] {f2});

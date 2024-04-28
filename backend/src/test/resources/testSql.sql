@@ -26,8 +26,8 @@ INSERT INTO `southwests` VALUES (1,'2023-01-01T20:40:00','2023-01-01T00:03:00','
                                 (6,'2023-01-01T20:40:00','2023-01-01T00:03:00','Denver (DEN)','Tucson (TUS)','WN309'),
                                 (7,'2023-01-01T20:40:00','2023-01-01T00:03:00','Minneapolis (MSP)','Tucson (TUS)','WN309');
 
-INSERT INTO deltas VALUES (1, '2023-01-01T01:00:00','2023-01-01T00:03:00','Paris','Japan','WN309'),
-                          (2, '2023-03-01T01:00:00','2023-01-01T00:03:00','Japan','Tucson (TUS)','WN309');
+INSERT INTO deltas VALUES (1, '2023-01-01T01:00:00','2023-01-01T00:03:00','Paris (PA)','Japan (JP)','WN309'),
+                          (2, '2023-03-01T01:00:00','2023-01-01T00:03:00','Japan (JP)','Tucson (TUS)','WN309');
 
 create table ReservedFlight (
         Id integer not null auto_increment,
