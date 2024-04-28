@@ -98,6 +98,9 @@ http://localhost:8080/swagger-ui/index.html#
 
 Explore API Documentation: Once the Swagger UI page loads, users will have access to the interactive documentation of the API. Here, they can explore the various endpoints, parameters, request payloads, and responses provided by the API.
 
+## Code Coverage
+
+The code coverage can be accessed [here](https://app.codecov.io/gh/Mee42/cs509-project/)
 
 
 
