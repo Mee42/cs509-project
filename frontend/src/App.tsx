@@ -1,6 +1,6 @@
 import "./App.css";
 import FlightSearchFilters from "./flightSearch/components/FlightSearchFilters";
-import Navbar from "./general/components/navbar";
+import { Navbar } from "./general/components/navbar";
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FlightSearchQuery } from "./model/flightSearchQuery";

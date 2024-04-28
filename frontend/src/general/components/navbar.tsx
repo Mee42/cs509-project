@@ -1,7 +1,7 @@
 import cs509_wpi_logo from "../cs509_wpi_logo.png";
 import "./navbar.css";
 
-const Navbar = () => {
+export function Navbar() {
   return (
     <div className="navbarContainer">
       <nav className="navbar">
@@ -12,6 +12,4 @@ const Navbar = () => {
       </nav>
     </div>
   );
-};
-
-export default Navbar;
+}

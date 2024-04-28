@@ -169,7 +169,13 @@ export function FlightSelect({ searchQueries }: Props) {
     return (
       selectedTrips.length > 0 &&
       selectedTrips.map((trip: Flight[], idx: number) => {
-        return <TripCard trip={trip} id={"SelectedTripCard" + idx} key={idx}></TripCard>;
+        return (
+          <TripCard
+            trip={trip}
+            id={"SelectedTripCard" + idx}
+            key={idx}
+          ></TripCard>
+        );
       })
     );
   }
@@ -205,7 +211,7 @@ export function FlightSelect({ searchQueries }: Props) {
     <div className="FlightSelectContainer">
       {searchQueries.length > 0 && (
         <div className="FlightSelectModifiers">
-          {currentBatchNum != 1 && (
+          {currentBatchNum != 1 && !isTripSelectionFull() && (
             <button className="BatchButton" onClick={decrementBatchNumber}>
               {"<"}
             </button>
@@ -215,7 +221,7 @@ export function FlightSelect({ searchQueries }: Props) {
             onChange={setSelectedFilter}
             selectedOption={selectedFilter}
           />
-          {nextTripBatch.length > 0 && (
+          {nextTripBatch.length > 0 && !isTripSelectionFull() && (
             <button className="BatchButton" onClick={incrementBatchNumber}>
               {">"}
             </button>

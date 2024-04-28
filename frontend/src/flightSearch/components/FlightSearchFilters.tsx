@@ -196,7 +196,7 @@ export const FlightSearchFilters = ({ setSearchQueries }: Props) => {
             inputID={returnDateFilterID}
           ></FlightDateTimeSelect>
         )}
-        <button onClick={handleSearchClick}>Go!</button>
+        <button onClick={handleSearchClick} data-testid="flightSearchButton">Go!</button>
       </div>
     </div>
   );

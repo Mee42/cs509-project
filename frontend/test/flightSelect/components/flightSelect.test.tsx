@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, fireEvent, cleanup, screen } from "@testing-library/react";
 import React from "react";
 import matchers from "@testing-library/jest-dom/matchers";
@@ -7,34 +7,43 @@ import * as fs from "../../../src/flightSearch/flightSearch";
 import { FlightSelect } from "../../../src/flightSelect/components/flightSelect";
 import { FlightSearchQuery } from "../../../src/model/flightSearchQuery";
 import { submitReservation } from "../../../src/flightSelect/flightReservation";
+import { useState } from "react";
 
+// setup
 vi.mock("../../../src/flightSearch/flightSearch");
 vi.mock("../../../src/flightSelect/flightReservation");
 expect.extend(matchers);
 
+// global constants
+const arrivalDateFilterButton = "FlightSelectArrivalDate";
+const oneWaySearchQueries = [
+  new FlightSearchQuery(
+    "Atlanta (ATL)",
+    "Tuscon (TUS)",
+    "2023-01-01",
+    "00:00:00",
+    "23:59:00",
+    0
+  ),
+];
+const roundTripSearchQueries = [
+  oneWaySearchQueries[0],
+  new FlightSearchQuery(
+    "Tuscon (TUS)",
+    "Atlanta (ATL)",
+    "2023-01-01",
+    "00:00:00",
+    "23:59:00",
+    0
+  ),
+];
+
+//tests
 describe("FlightSearchFilters", () => {
-  const arrivalDateFilterButton = "FlightSelectArrivalDate";
-  const oneWaySearchQueries = [
-    new FlightSearchQuery(
-      "Atlanta (ATL)",
-      "Tuscon (TUS)",
-      "2023-01-01",
-      "00:00:00",
-      "23:59:00",
-      0
-    ),
-  ];
-  const roundTripSearchQueries = [
-    oneWaySearchQueries[0],
-    new FlightSearchQuery(
-      "Tuscon (TUS)",
-      "Atlanta (ATL)",
-      "2023-01-01",
-      "00:00:00",
-      "23:59:00",
-      0
-    ),
-  ];
+  afterEach(() => {
+    vi.resetAllMocks();
+    cleanup();
+  });
 
   it("Should call flightSearch api with selected sorting", () => {
     vi.mocked(fs.getTrips).mockImplementation(
@@ -50,7 +59,6 @@ describe("FlightSearchFilters", () => {
     expect(fs.getTrips.mock.calls.slice(-1)[0][3]).toEqual("TravelTime");
     fireEvent.click(getByTestId("FlightSelectDepartureDate"));
     expect(fs.getTrips.mock.calls.slice(-1)[0][3]).toEqual("Depart");
-    cleanup();
   });
 
   it("Should allow the user to select one trip when One-Way selected", () => {
@@ -78,7 +86,6 @@ describe("FlightSearchFilters", () => {
     expect(screen.queryByText("Make Reservation")).toBe(null);
     fireEvent.click(tripCard);
     screen.getByText("Make Reservation");
-    cleanup();
   });
 
   it("Should allow the user to select two trips when Round-Trip selected", () => {
@@ -110,7 +117,6 @@ describe("FlightSearchFilters", () => {
     const tripCard2 = getByTestId("SelectableTripCard0");
     fireEvent.click(tripCard2);
     screen.getByText("Make Reservation");
-    cleanup();
   });
 
   it("Should display arrival and departure time in airport local time", () => {
@@ -140,7 +146,6 @@ describe("FlightSearchFilters", () => {
     expect(tripStartEndStr).toEqual(
       "12/31/2022 09:00 pm - 12/31/2022 05:00 pm"
     );
-    cleanup();
   });
 
   it("Should display trip details after submitting a reservation", () => {
@@ -171,6 +176,27 @@ describe("FlightSearchFilters", () => {
     fireEvent.click(tripCard);
     fireEvent.click(screen.getByText("Make Reservation"));
     getByTestId("SelectedTripCard0");
-    cleanup();
+  });
+
+  it("Should update when searchQueries change", () => {
+    const buttonTestId = "clickme";
+    function ContainerComponent() {
+      const [searchQueries, setSearchQueries] = useState(oneWaySearchQueries);
+      return (
+        <>
+          <button
+            data-testid={buttonTestId}
+            onClick={() => {
+              setSearchQueries(roundTripSearchQueries);
+            }}
+          />
+          <FlightSelect searchQueries={searchQueries} />
+        </>
+      );
+    }
+    const { getByTestId } = render(<ContainerComponent />);
+    expect(fs.getTrips).toHaveBeenCalledTimes(0);
+    fireEvent.click(getByTestId(buttonTestId));
+    expect(fs.getTrips).toHaveBeenCalledTimes(2);
   });
 });
