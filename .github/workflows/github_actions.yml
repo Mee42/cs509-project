@@ -8,17 +8,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0.36
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: flightdata
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
-        ports:
-          - 3306:3306
-
     steps:
       - uses: actions/checkout@v2
 
@@ -28,11 +17,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           architecture: x64
-
-      - name: Install Docker
-        uses: actions/setup-docker@v2
-        with:
-            version: 'latest'
 
       - name: Backend Test
         run: |
